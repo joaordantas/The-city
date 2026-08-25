@@ -12,6 +12,11 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/jogo")
+def pagina_jogo():
+    return render_template("jogo.html")
+
+
 @app.get("/api/estado")
 def obter_estado():
     return jsonify(jogo.estado())
@@ -39,4 +44,3 @@ def proxima_rodada():
 
 if __name__ == "__main__":
     app.run(debug=True)
-

@@ -3,71 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cidade em Equilibrio</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>The City</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=6">
 </head>
-<body>
-    <section id="tela-inicial" class="tela-inicial">
-        <div class="inicio-conteudo">
-            <p class="etiqueta">Simulador escolar de administracao</p>
-            <h1>Cidade em Equilibrio</h1>
-            <p class="subtitulo">Administre dinheiro, empregos, servicos publicos e meio ambiente sem deixar a cidade desandar.</p>
-
-            <form id="form-inicio" class="form-inicio">
-                <label for="nome-prefeito">Nome do prefeito</label>
-                <input id="nome-prefeito" name="prefeito" type="text" maxlength="24" placeholder="Digite seu nome">
-                <button type="submit">Iniciar cidade</button>
-            </form>
-        </div>
-    </section>
-
-    <main id="tela-jogo" class="tela-jogo escondido">
-        <header class="barra-topo">
-            <div>
-                <span class="rotulo">Prefeito</span>
-                <strong id="prefeito-atual">-</strong>
+<body class="pagina-menu">
+    <input class="controle-tutorial" id="tutorial-toggle" type="checkbox" aria-hidden="true">
+    <main class="menu-cena">
+        <section class="logo-bloco">
+            <div class="cidade-logo" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
-            <div class="indicadores-topo" id="indicadores-topo"></div>
-        </header>
-
-        <section class="layout-jogo">
-            <aside class="painel painel-economia">
-                <h2>Economia</h2>
-                <dl id="painel-economia"></dl>
-            </aside>
-
-            <section class="centro-jogo">
-                <div class="cabecalho-secao">
-                    <div>
-                        <span class="rotulo">Mapa</span>
-                        <h2>Cidade</h2>
-                    </div>
-                    <button id="botao-rodada" type="button">Proxima rodada</button>
-                </div>
-                <div id="mapa" class="mapa"></div>
-            </section>
-
-            <aside class="painel painel-status">
-                <h2>Status</h2>
-                <div id="evento-ativo" class="evento"></div>
-                <h3>Historico</h3>
-                <ul id="historico"></ul>
-            </aside>
+            <p class="selo">Construa &bull; Administre &bull; Equilibre</p>
+            <h1>The City</h1>
         </section>
 
-        <section class="barra-acoes">
-            <div class="cabecalho-secao">
-                <div>
-                    <span class="rotulo">Acoes</span>
-                    <h2>Construir</h2>
-                </div>
-                <p id="mensagem" class="mensagem"></p>
-            </div>
-            <div id="lista-construcoes" class="lista-construcoes"></div>
+        <section class="menu-card">
+            <h2>Nome do prefeito</h2>
+            <form id="form-inicio" class="form-inicio" action="/jogo" method="get">
+                <label class="campo-prefeito" for="nome-prefeito">
+                    <span class="avatar-prefeito">P</span>
+                    <input id="nome-prefeito" name="prefeito" type="text" maxlength="24" placeholder="Digite o nome do prefeito">
+                </label>
+                <button class="botao-grande botao-iniciar" type="submit">
+                    <span class="botao-icone">C</span>
+                    Iniciar
+                </button>
+                <label class="botao-grande botao-tutorial" id="botao-tutorial" for="tutorial-toggle" role="button" tabindex="0">
+                    <span class="botao-icone">?</span>
+                    Tutorial
+                </label>
+            </form>
+        </section>
+
+        <section class="botoes-menu-secundarios">
+            <button class="botao-quadrado" type="button" aria-label="Configuracoes">⚙</button>
+            <button class="botao-quadrado botao-creditos" type="button" aria-label="Creditos">★</button>
         </section>
     </main>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <section id="modal-tutorial" class="modal-tutorial" aria-hidden="true">
+        <div class="tutorial-card">
+            <h2>Tutorial rapido</h2>
+            <p>Voce administra uma cidade por rodadas. Construa casas, escolas, hospitais, parques e empresas para equilibrar dinheiro, empregos, saude, educacao, agua, energia e poluicao.</p>
+            <p>Nem toda obra e boa em tudo: fabrica gera empregos, mas polui; parque melhora a vida, mas custa manutencao.</p>
+            <label id="fechar-tutorial" for="tutorial-toggle" role="button" tabindex="0">Entendi</label>
+        </div>
+    </section>
 </body>
 </html>
-

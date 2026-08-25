@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The City - Jogo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=6">
+</head>
+<body class="pagina-jogo">
+    <main class="jogo-shell">
+        <aside class="sidebar-esquerda">
+            <a class="mini-logo" href="/">
+                <span>The</span>
+                City
+            </a>
+
+            <section class="perfil-prefeito painel-azul">
+                <span class="avatar-prefeito">P</span>
+                <div>
+                    <span class="rotulo">Prefeito</span>
+                    <strong id="prefeito-atual">-</strong>
+                </div>
+            </section>
+
+            <section class="painel-jogo painel-azul">
+                <h2>Economia</h2>
+                <dl id="painel-economia" class="lista-economia"></dl>
+            </section>
+
+            <section class="painel-jogo painel-roxo">
+                <h2>Tesouraria</h2>
+                <dl id="painel-tesouraria" class="lista-economia"></dl>
+            </section>
+        </aside>
+
+        <section class="area-principal">
+            <header id="indicadores-topo" class="indicadores-topo"></header>
+
+            <section class="mapa-card">
+                <div class="mapa-topo">
+                    <div>
+                        <span class="rotulo">Mapa da cidade</span>
+                        <h1>Cidade em Equilibrio</h1>
+                    </div>
+                    <a class="botao-voltar" href="/">Menu</a>
+                </div>
+                <div id="mapa" class="mapa"></div>
+                <div class="terrenos">
+                    <span>Terrenos disponiveis</span>
+                    <strong id="terrenos-livres">0 / 16</strong>
+                </div>
+            </section>
+
+            <footer class="barra-inferior">
+                <button class="aba ativa" type="button">Construir</button>
+                <button class="aba" type="button">Economia</button>
+                <button class="aba" type="button">Servicos</button>
+                <button class="aba" type="button">Eventos</button>
+                <button class="aba" type="button">Relatorios</button>
+                <button id="botao-rodada" class="botao-rodada" type="button">Proxima rodada</button>
+            </footer>
+        </section>
+
+        <aside class="sidebar-direita">
+            <section class="painel-jogo painel-evento">
+                <h2>Evento ativo</h2>
+                <div id="evento-ativo" class="evento"></div>
+            </section>
+
+            <section class="painel-jogo painel-azul">
+                <h2>Indicadores</h2>
+                <div id="painel-indicadores" class="barras-indicadores"></div>
+            </section>
+
+            <section class="painel-jogo painel-roxo">
+                <h2>Historico</h2>
+                <ul id="historico" class="historico"></ul>
+            </section>
+        </aside>
+
+        <section class="construcoes-dock">
+            <div class="dock-topo">
+                <h2>Construcoes</h2>
+                <p id="mensagem" class="mensagem"></p>
+            </div>
+            <div id="lista-construcoes" class="lista-construcoes"></div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/game.js') }}?v=2"></script>
+</body>
+</html>
