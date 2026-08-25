@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The City</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=6">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=7">
 </head>
 <body class="pagina-menu">
     <input class="controle-tutorial" id="tutorial-toggle" type="checkbox" aria-hidden="true">
@@ -24,7 +24,7 @@
             <form id="form-inicio" class="form-inicio" action="/jogo" method="get">
                 <label class="campo-prefeito" for="nome-prefeito">
                     <span class="avatar-prefeito">P</span>
-                    <input id="nome-prefeito" name="prefeito" type="text" maxlength="24" placeholder="Digite o nome do prefeito">
+                    <input id="nome-prefeito" name="prefeito" type="text" maxlength="24" placeholder="Digite o nome do prefeito" required pattern=".*\S.*" title="Digite o nome do prefeito antes de iniciar.">
                 </label>
                 <button class="botao-grande botao-iniciar" type="submit">
                     <span class="botao-icone">C</span>

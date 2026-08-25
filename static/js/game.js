@@ -210,7 +210,7 @@ async function avancarRodada() {
 
 async function iniciarJogo() {
     const parametros = new URLSearchParams(window.location.search);
-    const prefeito = parametros.get("prefeito") || "Prefeito";
+    const prefeito = (parametros.get("prefeito") || "").trim();
     const estado = await chamarApi("/api/novo-jogo", { prefeito });
     atualizarTela(estado, "Escolha uma construcao ou avance a rodada.");
 }
