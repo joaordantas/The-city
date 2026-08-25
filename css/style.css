@@ -7,9 +7,58 @@
 body {
     min-height: 100vh;
     font-family: Arial, sans-serif;
+
+    background: #1b263b;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #app {
+    width: 100%;
+    max-width: 900px;
+    padding: 40px;
+
     text-align: center;
-    padding: 50px;
+}
+
+h1 {
+    font-size: 56px;
+    margin-bottom: 15px;
+}
+
+p {
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+
+button {
+    padding: 15px 35px;
+    margin: 10px;
+
+    border: none;
+    border-radius: 10px;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+#start-button {
+    background: #4caf50;
+    color: white;
+}
+
+#how-to-play-button {
+    background: #ffffff;
+    color: #1b263b;
 }

@@ -1,0 +1,2 @@
+from .jogo import JogoCidade
+

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cidade em Equilibrio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <section id="tela-inicial" class="tela-inicial">
+        <div class="inicio-conteudo">
+            <p class="etiqueta">Simulador escolar de administracao</p>
+            <h1>Cidade em Equilibrio</h1>
+            <p class="subtitulo">Administre dinheiro, empregos, servicos publicos e meio ambiente sem deixar a cidade desandar.</p>
+
+            <form id="form-inicio" class="form-inicio">
+                <label for="nome-prefeito">Nome do prefeito</label>
+                <input id="nome-prefeito" name="prefeito" type="text" maxlength="24" placeholder="Digite seu nome">
+                <button type="submit">Iniciar cidade</button>
+            </form>
+        </div>
+    </section>
+
+    <main id="tela-jogo" class="tela-jogo escondido">
+        <header class="barra-topo">
+            <div>
+                <span class="rotulo">Prefeito</span>
+                <strong id="prefeito-atual">-</strong>
+            </div>
+            <div class="indicadores-topo" id="indicadores-topo"></div>
+        </header>
+
+        <section class="layout-jogo">
+            <aside class="painel painel-economia">
+                <h2>Economia</h2>
+                <dl id="painel-economia"></dl>
+            </aside>
+
+            <section class="centro-jogo">
+                <div class="cabecalho-secao">
+                    <div>
+                        <span class="rotulo">Mapa</span>
+                        <h2>Cidade</h2>
+                    </div>
+                    <button id="botao-rodada" type="button">Proxima rodada</button>
+                </div>
+                <div id="mapa" class="mapa"></div>
+            </section>
+
+            <aside class="painel painel-status">
+                <h2>Status</h2>
+                <div id="evento-ativo" class="evento"></div>
+                <h3>Historico</h3>
+                <ul id="historico"></ul>
+            </aside>
+        </section>
+
+        <section class="barra-acoes">
+            <div class="cabecalho-secao">
+                <div>
+                    <span class="rotulo">Acoes</span>
+                    <h2>Construir</h2>
+                </div>
+                <p id="mensagem" class="mensagem"></p>
+            </div>
+            <div id="lista-construcoes" class="lista-construcoes"></div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+
