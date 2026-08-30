@@ -139,13 +139,13 @@ function desenharMapa(lotes) {
     terrenosLivres.textContent = `${livres} / ${lotes.length}`;
 
     mapa.innerHTML = lotes
-        .map((construcaoId, indice) => {
+        .map((construcaoId) => {
             const construcao = construcoesPorId[construcaoId];
             const tema = temasConstrucoes[construcaoId] || "vazio";
             const titulo = construcao ? construcao.nome : "Terreno livre";
             const texto = construcao ? construcao.nome : "Livre";
             return `
-                <button class="lote lote-${tema} ${construcao ? "ocupado" : ""}" data-posicao="${indice}" title="${titulo}">
+                <button class="lote lote-${tema} ${construcao ? "ocupado" : ""}" title="${titulo}">
                     <span class="predio"></span>
                     <strong>${texto}</strong>
                 </button>

@@ -28,7 +28,6 @@ REGRAS_ECONOMIA = {
 CONSTRUCOES = {
     "casa": {
         "nome": "Casa",
-        "emoji": "H",
         "custo": 900,
         "manutencao": 25,
         "capacidade_populacional": 25,
@@ -40,7 +39,6 @@ CONSTRUCOES = {
     },
     "escola": {
         "nome": "Escola",
-        "emoji": "E",
         "custo": 2000,
         "manutencao": 160,
         "empregos": 5,
@@ -52,7 +50,6 @@ CONSTRUCOES = {
     },
     "hospital": {
         "nome": "Hospital",
-        "emoji": "S",
         "custo": 2800,
         "manutencao": 230,
         "empregos": 8,
@@ -64,7 +61,6 @@ CONSTRUCOES = {
     },
     "parque": {
         "nome": "Parque",
-        "emoji": "P",
         "custo": 1200,
         "manutencao": 70,
         "poluicao": -8,
@@ -73,7 +69,6 @@ CONSTRUCOES = {
     },
     "comercio": {
         "nome": "Comercio",
-        "emoji": "C",
         "custo": 1600,
         "manutencao": 90,
         "empregos": 14,
@@ -85,7 +80,6 @@ CONSTRUCOES = {
     },
     "fabrica": {
         "nome": "Fabrica",
-        "emoji": "F",
         "custo": 2600,
         "manutencao": 180,
         "empregos": 28,
@@ -97,7 +91,6 @@ CONSTRUCOES = {
     },
     "estacao_agua": {
         "nome": "Estacao de agua",
-        "emoji": "A",
         "custo": 2200,
         "manutencao": 140,
         "agua": 18,
@@ -107,7 +100,6 @@ CONSTRUCOES = {
     },
     "usina_solar": {
         "nome": "Usina solar",
-        "emoji": "U",
         "custo": 2400,
         "manutencao": 110,
         "energia": 20,
@@ -154,4 +146,3 @@ EVENTOS = [
         "efeitos": {"poluicao": -6, "qualidade_vida": 3},
     },
 ]
-
