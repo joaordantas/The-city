@@ -1,89 +1,81 @@
-from .dados import CONSTRUCOES, REGRAS_ECONOMIA
+from .dados import CONFIG_IMPOSTOS, CONFIG_SIMULACAO
 
 
 def calcular_economia(cidade):
-    trabalhadores = min(cidade.dados["populacao"], cidade.dados["empregos"])
-    desempregados = max(0, cidade.dados["populacao"] - cidade.dados["empregos"])
+    if cidade.simulacao_suja:
+        cidade.recalcular_simulacao()
 
-    producao_base = trabalhadores * REGRAS_ECONOMIA["producao_por_trabalhador"]
-    producao_construcoes = sum(
-        CONSTRUCOES[construcao_id].get("atividade_economica", 0)
-        for construcao_id in cidade.construcoes
+    trabalho = cidade.simulacao["trabalho"]
+    fator_mao_obra = min(1, trabalho["empregados"] / cidade.dados["empregos"]) if cidade.dados["empregos"] else 1
+    atividade_comercio = sum(
+        predio["atividade_efetiva"] for predio in cidade.simulacao["predios"]
+        if predio["categoria"] == "comercio"
     )
-
-    bonus_educacao = cidade.dados["educacao"] * REGRAS_ECONOMIA["bonus_qualidade_por_educacao"]
-    atividade_economica = int((producao_base + producao_construcoes) * (1 + bonus_educacao / 100))
-    impostos = int(atividade_economica * REGRAS_ECONOMIA["aliquota_impostos"])
-
-    custo_servicos = int(cidade.dados["populacao"] * REGRAS_ECONOMIA["custo_servicos_por_habitante"])
-    manutencao = sum(
-        CONSTRUCOES[construcao_id].get("manutencao", 0)
-        for construcao_id in cidade.construcoes
+    atividade_industria = sum(
+        predio["atividade_efetiva"] for predio in cidade.simulacao["predios"]
+        if predio["categoria"] == "industria"
     )
-    despesas = custo_servicos + manutencao
-    resultado = impostos - despesas
+    receitas_detalhes = {
+        "IPTU / Residencial": round(cidade.dados["populacao"] * CONFIG_IMPOSTOS["base_residencial_por_habitante"] * cidade.impostos["residencial"] / 100),
+        "Comercio": round(atividade_comercio * fator_mao_obra * cidade.impostos["comercio"] / 100),
+        "Industria": round(atividade_industria * fator_mao_obra * cidade.impostos["industria"] / 100),
+        "Outras receitas": CONFIG_IMPOSTOS["outras_receitas"],
+    }
+    receitas = sum(receitas_detalhes.values())
 
+    custo_servicos = round(cidade.dados["populacao"] * CONFIG_SIMULACAO["custo_servicos_por_habitante"])
+    despesas_detalhes = {
+        "Saude": round(custo_servicos * 0.30),
+        "Educacao": round(custo_servicos * 0.25),
+        "Agua": round(custo_servicos * 0.15),
+        "Energia": round(custo_servicos * 0.15),
+        "Infraestrutura": 0,
+        "Outras despesas": round(custo_servicos * 0.15),
+    }
+    manutencao = 0
+    for predio in cidade.simulacao["predios"]:
+        valor = predio["manutencao"]
+        manutencao += valor
+        grupo = {
+            "saude": "Saude",
+            "educacao": "Educacao",
+            "infraestrutura": "Agua",
+            "ambiental": "Energia",
+        }.get(predio["categoria"], "Infraestrutura")
+        despesas_detalhes[grupo] += valor
+
+    despesas = sum(despesas_detalhes.values())
     return {
-        "trabalhadores": trabalhadores,
-        "desempregados": desempregados,
-        "atividade_economica": atividade_economica,
-        "receitas": impostos,
+        **trabalho,
+        "atividade_economica": atividade_comercio + atividade_industria,
+        "receitas_detalhes": receitas_detalhes,
+        "despesas_detalhes": despesas_detalhes,
+        "receitas": receitas,
         "despesas": despesas,
         "manutencao": manutencao,
         "servicos_publicos": custo_servicos,
-        "resultado": resultado,
+        "resultado": receitas - despesas,
+        "previsao": receitas - despesas,
     }
 
 
 def processar_rodada(cidade):
+    rodada_processada = cidade.dados["rodada"]
+    cidade.recalcular_simulacao()
     resumo = calcular_economia(cidade)
     cidade.dados["dinheiro"] += resumo["resultado"]
-
-    atualizar_populacao(cidade, resumo)
-    atualizar_qualidade_vida(cidade, resumo)
+    resumo["crescimento_populacao"] = cidade.processar_populacao()
+    cidade.recalcular_simulacao()
     atualizar_crise_financeira(cidade)
 
-    cidade.dados["rodada"] += 1
-    cidade.limitar_indicadores()
-
+    if cidade.status == "jogando":
+        if rodada_processada >= cidade.dados["max_rodadas"]:
+            cidade.status = "concluido"
+        else:
+            cidade.dados["rodada"] += 1
     resumo["dinheiro_final"] = cidade.dados["dinheiro"]
-    resumo["rodada"] = cidade.dados["rodada"] - 1
+    resumo["rodada"] = rodada_processada
     return resumo
-
-
-def atualizar_populacao(cidade, resumo):
-    if cidade.dados["populacao"] >= cidade.dados["capacidade_populacional"]:
-        return
-
-    crescimento = REGRAS_ECONOMIA["crescimento_populacional_base"]
-
-    if cidade.dados["qualidade_vida"] >= 70:
-        crescimento += 3
-    elif cidade.dados["qualidade_vida"] < 35:
-        crescimento -= 2
-
-    if resumo["desempregados"] > cidade.dados["populacao"] * 0.35:
-        crescimento -= 2
-
-    crescimento = max(-3, crescimento)
-    nova_populacao = cidade.dados["populacao"] + crescimento
-    cidade.dados["populacao"] = min(nova_populacao, cidade.dados["capacidade_populacional"])
-
-
-def atualizar_qualidade_vida(cidade, resumo):
-    variacao = 0
-    variacao += (cidade.dados["educacao"] - 50) * 0.015
-    variacao += (cidade.dados["saude"] - 50) * 0.018
-    variacao -= cidade.dados["poluicao"] * REGRAS_ECONOMIA["penalidade_qualidade_por_poluicao"]
-
-    if cidade.dados["energia"] < REGRAS_ECONOMIA["limite_alerta_recurso"]:
-        variacao -= 2
-    if cidade.dados["agua"] < REGRAS_ECONOMIA["limite_alerta_recurso"]:
-        variacao -= 2
-    if resumo["desempregados"] > cidade.dados["populacao"] * 0.25:
-        variacao -= 1
-
-    cidade.dados["qualidade_vida"] += round(variacao)
 
 
 def atualizar_crise_financeira(cidade):
@@ -91,9 +83,5 @@ def atualizar_crise_financeira(cidade):
         cidade.rodadas_em_crise += 1
     else:
         cidade.rodadas_em_crise = 0
-
-    if cidade.rodadas_em_crise >= REGRAS_ECONOMIA["rodadas_em_crise_para_derrota"]:
+    if cidade.rodadas_em_crise >= CONFIG_SIMULACAO["rodadas_em_crise_para_derrota"]:
         cidade.status = "falencia"
-    elif cidade.dados["rodada"] >= cidade.dados["max_rodadas"]:
-        cidade.status = "concluido"
-

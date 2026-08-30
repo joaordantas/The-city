@@ -47,9 +47,34 @@ def construir():
     return jsonify(jogo.construir(construcao_id, posicao))
 
 
+@app.post("/api/mover")
+def mover():
+    dados = request.get_json(silent=True) or {}
+    return jsonify(jogo.mover(dados.get("predio_id"), dados.get("posicao")))
+
+
+@app.post("/api/demolir")
+def demolir():
+    dados = request.get_json(silent=True) or {}
+    return jsonify(jogo.demolir(dados.get("predio_id")))
+
+
+@app.post("/api/melhorar")
+def melhorar():
+    dados = request.get_json(silent=True) or {}
+    return jsonify(jogo.melhorar(dados.get("predio_id")))
+
+
+@app.post("/api/imposto")
+def alterar_imposto():
+    dados = request.get_json(silent=True) or {}
+    return jsonify(jogo.alterar_imposto(dados.get("tipo"), dados.get("direcao")))
+
+
 @app.post("/api/proxima-rodada")
 def proxima_rodada():
-    return jsonify(jogo.proxima_rodada())
+    dados = request.get_json(silent=True) or {}
+    return jsonify(jogo.proxima_rodada(dados.get("rodada_esperada")))
 
 
 if __name__ == "__main__":

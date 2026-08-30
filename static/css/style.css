@@ -5,10 +5,12 @@
     --verde: #5ebe25;
     --amarelo: #ffc928;
     --laranja: #f28b16;
+    --vermelho: #d83b35;
     --roxo: #7735bf;
     --texto: #122033;
     --claro: #fff7de;
-    --sombra: rgba(5, 31, 62, 0.28);
+    --branco: #ffffff;
+    --sombra: rgba(5, 31, 62, 0.25);
 }
 
 * {
@@ -34,11 +36,31 @@ button {
     cursor: pointer;
 }
 
+button:disabled {
+    cursor: not-allowed;
+    filter: grayscale(0.7);
+    opacity: 0.55;
+}
+
 a {
     color: inherit;
     text-decoration: none;
 }
 
+[hidden] {
+    display: none !important;
+}
+
+.rotulo {
+    display: block;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    opacity: 0.74;
+    text-transform: uppercase;
+}
+
+/* Menu inicial */
 .controle-tutorial {
     position: fixed;
     width: 1px;
@@ -59,9 +81,8 @@ a {
     padding: 28px;
     overflow: hidden;
     background:
-        radial-gradient(circle at 12% 10%, rgba(255, 255, 255, 0.95) 0 42px, transparent 44px),
-        radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.9) 0 58px, transparent 60px),
-        radial-gradient(circle at 76% 11%, rgba(255, 255, 255, 0.9) 0 46px, transparent 48px),
+        radial-gradient(circle at 15% 10%, rgba(255, 255, 255, 0.9) 0 52px, transparent 54px),
+        radial-gradient(circle at 78% 11%, rgba(255, 255, 255, 0.88) 0 48px, transparent 50px),
         linear-gradient(#23aaf3 0 45%, #67c95c 45% 100%);
 }
 
@@ -73,9 +94,7 @@ a {
         linear-gradient(135deg, transparent 0 38%, #4a4f58 39% 45%, transparent 46%),
         linear-gradient(45deg, transparent 0 45%, #4a4f58 46% 52%, transparent 53%),
         radial-gradient(circle at 20% 72%, #1f8c37 0 36px, transparent 38px),
-        radial-gradient(circle at 65% 50%, #1f8c37 0 46px, transparent 48px),
-        radial-gradient(circle at 86% 76%, #1f8c37 0 34px, transparent 36px);
-    opacity: 0.9;
+        radial-gradient(circle at 65% 50%, #1f8c37 0 46px, transparent 48px);
 }
 
 .menu-cena::after {
@@ -83,15 +102,12 @@ a {
     position: absolute;
     inset: auto 0 0;
     height: 45%;
-    background:
-        linear-gradient(90deg, transparent 3%, #ffd56b 3% 10%, transparent 10% 18%, #74c8ef 18% 25%, transparent 25% 33%, #ef744f 33% 42%, transparent 42% 54%, #ffd56b 54% 62%, transparent 62% 76%, #74c8ef 76% 84%, transparent 84%),
-        linear-gradient(#338d45 0 100%);
+    background: linear-gradient(90deg, transparent 3%, #ffd56b 3% 10%, transparent 10% 18%, #74c8ef 18% 25%, transparent 25% 33%, #ef744f 33% 42%, transparent 42%), #338d45;
     clip-path: polygon(0 28%, 100% 0, 100% 100%, 0 100%);
 }
 
 .logo-bloco,
-.menu-card,
-.botoes-menu-secundarios {
+.menu-card {
     position: relative;
     z-index: 1;
 }
@@ -100,8 +116,8 @@ a {
     align-self: end;
     width: min(700px, 100%);
     margin-bottom: 18px;
-    text-align: center;
     color: white;
+    text-align: center;
     text-shadow: 0 7px 0 #08355f, 0 16px 22px var(--sombra);
 }
 
@@ -122,25 +138,17 @@ a {
     box-shadow: inset 12px 0 rgba(255, 255, 255, 0.4);
 }
 
-.cidade-logo span:nth-child(1) {
-    height: 54px;
-}
-
-.cidade-logo span:nth-child(2) {
-    height: 84px;
-}
-
-.cidade-logo span:nth-child(3) {
-    height: 66px;
-}
+.cidade-logo span:nth-child(1) { height: 54px; }
+.cidade-logo span:nth-child(2) { height: 84px; }
+.cidade-logo span:nth-child(3) { height: 66px; }
 
 .selo {
     display: inline-block;
     margin: 0;
     padding: 8px 18px;
     border-radius: 999px;
-    background: #075591;
-    color: #fff7de;
+    background: var(--azul-painel);
+    color: var(--claro);
     font-weight: 800;
     text-transform: uppercase;
 }
@@ -188,14 +196,14 @@ a {
 .avatar-prefeito {
     display: grid;
     place-items: center;
-    width: 58px;
-    height: 58px;
+    width: 48px;
+    height: 48px;
     flex: 0 0 auto;
-    border: 4px solid #07375f;
+    border: 3px solid #07375f;
     border-radius: 50%;
     background: linear-gradient(#ffd9a1, #f09d4d);
     color: #07375f;
-    font-size: 30px;
+    font-size: 24px;
     font-weight: 900;
 }
 
@@ -213,24 +221,19 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 82px;
-    border-radius: 18px;
+    min-height: 76px;
     border: 5px solid rgba(6, 55, 96, 0.75);
+    border-radius: 18px;
     color: white;
-    font-size: clamp(28px, 7vw, 52px);
+    font-size: clamp(28px, 7vw, 48px);
     font-weight: 900;
     text-transform: uppercase;
     text-shadow: 0 3px 0 rgba(0, 0, 0, 0.28);
     box-shadow: inset 0 7px rgba(255, 255, 255, 0.35), 0 8px 0 rgba(0, 0, 0, 0.28);
 }
 
-.botao-iniciar {
-    background: linear-gradient(#7ee536, #34a81f);
-}
-
-.botao-tutorial {
-    background: linear-gradient(#2dbcf4, #116dc2);
-}
+.botao-iniciar { background: linear-gradient(#7ee536, #34a81f); }
+.botao-tutorial { background: linear-gradient(#2dbcf4, #116dc2); }
 
 .botao-icone {
     display: inline-grid;
@@ -242,241 +245,195 @@ a {
     background: rgba(255, 255, 255, 0.22);
 }
 
-.botoes-menu-secundarios {
-    position: absolute;
-    inset: auto 28px 28px;
-    display: flex;
-    justify-content: space-between;
-    pointer-events: none;
-}
-
-.botao-quadrado {
-    width: 110px;
-    height: 110px;
-    border: 5px solid rgba(6, 55, 96, 0.75);
-    border-radius: 22px;
-    background: linear-gradient(#2dbcf4, #116dc2);
-    color: white;
-    font-size: 44px;
-    box-shadow: inset 0 6px rgba(255, 255, 255, 0.25), 0 8px 0 rgba(0, 0, 0, 0.22);
-    pointer-events: auto;
-}
-
-.botao-creditos {
-    background: linear-gradient(#a85df1, #6327ac);
-}
-
-.modal-tutorial {
+.modal-tutorial,
+.modal-jogo,
+.overlay-transicao {
     position: fixed;
-    z-index: 5;
+    z-index: 20;
     inset: 0;
     display: grid;
     place-items: center;
     padding: 20px;
-    background: rgba(5, 31, 62, 0.55);
+    background: rgba(5, 31, 62, 0.58);
+    backdrop-filter: blur(4px);
 }
 
-.controle-tutorial:not(:checked) ~ .modal-tutorial {
+.controle-tutorial:not(:checked) ~ .modal-tutorial,
+.modal-jogo[aria-hidden="true"],
+.overlay-transicao[aria-hidden="true"] {
     display: none;
 }
 
-.tutorial-card {
+.tutorial-card,
+.modal-card,
+.resumo-rodada {
     width: min(560px, 100%);
-    padding: 22px;
-    border: 6px solid #07375f;
-    border-radius: 22px;
-    background: #fff7de;
-    color: var(--texto);
-    box-shadow: 0 22px 40px var(--sombra);
+    padding: 24px;
+    border: 5px solid #07375f;
+    border-radius: 20px;
+    background: var(--claro);
+    box-shadow: 0 18px 40px var(--sombra);
 }
 
-.tutorial-card h2 {
-    margin: 0 0 14px;
-}
+.tutorial-card h2,
+.modal-card h2,
+.resumo-rodada h2 { margin: 0 0 12px; }
+.tutorial-card p,
+.modal-card p { line-height: 1.45; }
 
-.tutorial-card p {
-    line-height: 1.45;
-}
-
-.tutorial-card label {
+.tutorial-card label,
+.botao-primario,
+.botao-secundario {
     display: block;
     width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    background: var(--verde);
-    color: white;
+    padding: 12px 16px;
+    border-radius: 10px;
     font-weight: 900;
     text-align: center;
-    cursor: pointer;
 }
 
+.tutorial-card label,
+.botao-primario { background: var(--verde); color: white; }
+.botao-secundario { background: #dce8ef; color: #07375f; }
+.modal-card > .botao-secundario { margin-top: 10px; }
+
+/* Partida */
 .pagina-jogo {
-    min-height: 100vh;
+    height: 100vh;
     padding: 10px;
-    background:
-        radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.55), transparent 16%),
-        linear-gradient(#1ba6ef, #0877c4);
+    overflow: hidden;
+    background: linear-gradient(#1ba6ef, #0877c4);
 }
 
 .jogo-shell {
+    position: relative;
     display: grid;
-    grid-template-columns: 290px minmax(520px, 1fr) 300px;
-    grid-template-rows: 1fr auto;
-    gap: 10px;
-    width: min(1540px, 100%);
-    min-height: calc(100vh - 20px);
+    grid-template-rows: 88px minmax(0, 1fr) 58px;
+    gap: 9px;
+    width: min(1800px, 100%);
+    height: calc(100vh - 20px);
     margin: 0 auto;
 }
 
-.sidebar-esquerda,
-.sidebar-direita,
-.area-principal {
-    min-width: 0;
+.hud-principal {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr) 190px;
+    gap: 9px;
 }
 
 .mini-logo {
-    display: block;
-    margin: 6px 0 12px;
+    display: grid;
+    place-content: center;
+    border: 3px solid #07375f;
+    border-radius: 14px;
+    background: var(--azul-painel);
     color: var(--amarelo);
-    font-size: 56px;
+    font-size: 28px;
     font-weight: 900;
-    line-height: 0.8;
+    line-height: 0.78;
     text-align: center;
     text-transform: uppercase;
-    text-shadow: 0 5px 0 #07375f, 0 12px 18px var(--sombra);
+    text-shadow: 0 3px 0 #07375f;
+    box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
 }
 
-.mini-logo span {
-    display: block;
-    color: white;
-    font-size: 30px;
-}
-
-.painel-jogo,
-.painel-azul,
-.painel-roxo,
-.painel-evento,
-.mapa-card,
-.construcoes-dock {
-    border: 4px solid #07375f;
-    border-radius: 14px;
-    box-shadow: 0 8px 0 rgba(0, 0, 0, 0.22);
-}
-
-.perfil-prefeito {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
-    padding: 12px;
-}
-
-.painel-jogo {
-    margin-bottom: 10px;
-    padding: 14px;
-}
-
-.painel-jogo h2 {
-    margin: 0 0 12px;
-    color: white;
-    font-size: 22px;
-    text-transform: uppercase;
-    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
-}
-
-.painel-azul {
-    background: linear-gradient(#086ca8, #073c73);
-    color: white;
-}
-
-.painel-roxo {
-    background: linear-gradient(#8f45df, #3c1f82);
-    color: white;
-}
-
-.painel-evento {
-    background: linear-gradient(#ffc02e, #f28b16);
-}
-
-.painel-evento h2 {
-    color: #4f2500;
-    text-shadow: none;
-}
-
-.rotulo {
-    display: block;
-    font-size: 12px;
-    font-weight: 900;
-    opacity: 0.74;
-    text-transform: uppercase;
-}
-
-.lista-economia {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 9px 12px;
-    margin: 0;
-}
-
-.lista-economia dt {
-    opacity: 0.86;
-}
-
-.lista-economia dd {
-    margin: 0;
-    font-weight: 900;
-}
-
-.positivo {
-    color: #baff6a;
-}
-
-.negativo {
-    color: #ffb1a8;
-}
-
-.area-principal {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    gap: 10px;
-}
+.mini-logo span { color: white; font-size: 15px; }
 
 .indicadores-topo {
     display: grid;
-    grid-template-columns: repeat(7, minmax(100px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(5, minmax(105px, 1fr));
+    gap: 7px;
+}
+
+.indicador-topo,
+.timer-card,
+.perfil-prefeito,
+.painel-alertas,
+.decisao-rodada,
+.painel-operacional {
+    border: 3px solid #07375f;
+    border-radius: 13px;
+    box-shadow: 0 5px 0 rgba(0, 0, 0, 0.19);
 }
 
 .indicador-topo {
-    min-height: 84px;
-    padding: 10px;
-    border: 4px solid #07375f;
-    border-radius: 14px;
-    background: #fff7de;
-    box-shadow: 0 7px 0 rgba(0, 0, 0, 0.2);
+    position: relative;
+    min-width: 0;
+    padding: 9px 10px;
+    background: var(--claro);
 }
 
 .indicador-topo span,
-.indicador-topo small {
-    display: block;
-    font-weight: 800;
+.indicador-topo small { display: block; font-size: 11px; font-weight: 800; }
+.indicador-topo strong { display: block; margin: 3px 0; color: #07375f; font-size: clamp(18px, 1.45vw, 25px); }
+
+.indicador-topo[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    z-index: 12;
+    top: calc(100% + 8px);
+    left: 0;
+    width: max-content;
+    max-width: 230px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    background: #092e51;
+    color: white;
+    font-size: 12px;
+    line-height: 1.35;
+    white-space: pre-line;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-3px);
+    transition: 180ms ease;
 }
 
-.indicador-topo strong {
-    display: block;
-    margin: 3px 0;
-    font-size: clamp(18px, 1.8vw, 28px);
-    color: #07375f;
+.indicador-topo[data-tooltip]:hover::after,
+.indicador-topo[data-tooltip]:focus-within::after { opacity: 1; transform: none; }
+
+.timer-card {
+    padding: 8px 10px;
+    background: #07375f;
+    color: white;
+    transition: 200ms ease;
 }
+
+.timer-cabecalho { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; text-transform: uppercase; }
+.botao-icone-hud { width: 30px; height: 26px; border-radius: 7px; background: rgba(255, 255, 255, 0.16); color: white; font-size: 12px; font-weight: 900; }
+.timer-card time { display: block; font-size: 29px; font-weight: 900; line-height: 1; letter-spacing: 0.04em; }
+.calendario-rodada { display: block; margin-top: 3px; font-size: 11px; opacity: 0.82; text-transform: uppercase; }
+.barra-tempo { display: block; height: 5px; margin-top: 6px; border-radius: 99px; background: rgba(255, 255, 255, 0.2); overflow: hidden; }
+.barra-tempo span { display: block; width: 100%; height: 100%; border-radius: inherit; background: #65de59; transition: width 250ms linear; }
+.timer-card.atencao { background: #9c6510; }
+.timer-card.atencao .barra-tempo span { background: var(--amarelo); }
+.timer-card.critico { background: #982d2a; }
+.timer-card.critico .barra-tempo span { background: #ff827a; }
+.timer-card.critico time { animation: pulso-timer 700ms ease-in-out infinite alternate; }
+.timer-card.pausado { background: #55477c; }
+
+@keyframes pulso-timer { to { transform: scale(1.045); color: #ffe36d; } }
+
+.jogo-corpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 9px;
+    min-height: 0;
+}
+
+.area-cidade { position: relative; min-width: 0; min-height: 0; }
 
 .mapa-card {
     position: relative;
+    height: 100%;
     overflow: hidden;
     padding: 12px;
+    border: 4px solid #07375f;
+    border-radius: 16px;
     background:
-        linear-gradient(135deg, transparent 0 46%, rgba(70, 78, 86, 0.55) 47% 53%, transparent 54%),
-        linear-gradient(45deg, transparent 0 46%, rgba(70, 78, 86, 0.5) 47% 53%, transparent 54%),
-        linear-gradient(#65c760, #4caf50);
+        linear-gradient(135deg, transparent 0 47%, rgba(70, 78, 86, 0.36) 48% 52%, transparent 53%),
+        linear-gradient(45deg, transparent 0 47%, rgba(70, 78, 86, 0.32) 48% 52%, transparent 53%),
+        linear-gradient(#67ca62, #47ae4c);
+    box-shadow: 0 7px 0 rgba(0, 0, 0, 0.22);
 }
 
 .mapa-card::before {
@@ -484,388 +441,258 @@ a {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 14% 26%, #0e84c9 0 70px, transparent 72px),
-        radial-gradient(circle at 88% 86%, #0e84c9 0 74px, transparent 76px),
-        radial-gradient(circle at 70% 18%, rgba(255, 255, 255, 0.25), transparent 90px);
+        radial-gradient(circle at 9% 36%, #0e84c9 0 64px, transparent 66px),
+        radial-gradient(circle at 91% 82%, #0e84c9 0 72px, transparent 74px),
+        radial-gradient(circle at 70% 16%, rgba(255, 255, 255, 0.2), transparent 100px);
     pointer-events: none;
 }
 
 .mapa-topo,
 .mapa,
+.mensagem { position: relative; z-index: 1; }
+
+.mapa-topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: white; text-shadow: 0 2px 0 rgba(0, 0, 0, 0.3); }
+.mapa-topo h1 { margin: 1px 0 0; font-size: clamp(20px, 2vw, 28px); }
+.mapa-topo .rotulo strong { opacity: 1; }
+
 .terrenos {
-    position: relative;
-    z-index: 1;
-}
-
-.mapa-topo {
-    display: flex;
-    justify-content: space-between;
-    gap: 14px;
-    align-items: center;
-    color: white;
-    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
-}
-
-.mapa-topo h1 {
-    margin: 0;
-    font-size: 28px;
-}
-
-.botao-voltar {
-    padding: 9px 14px;
-    border: 3px solid #07375f;
+    min-width: 100px;
+    padding: 6px 12px;
+    border: 2px solid #07375f;
     border-radius: 10px;
-    background: #fff7de;
+    background: var(--claro);
     color: #07375f;
-    font-weight: 900;
+    text-align: center;
     text-shadow: none;
 }
 
+.terrenos span,
+.terrenos strong { display: block; font-size: 11px; font-weight: 900; }
+.terrenos strong { font-size: 15px; }
+
 .mapa {
     display: grid;
-    grid-template-columns: repeat(4, minmax(96px, 1fr));
-    gap: 12px;
-    margin-top: 14px;
+    grid-template-columns: repeat(4, minmax(82px, 1fr));
+    grid-template-rows: repeat(4, minmax(68px, 1fr));
+    gap: 9px;
+    height: calc(100% - 86px);
+    margin-top: 9px;
 }
 
 .lote {
     position: relative;
     display: grid;
     place-items: center;
-    min-height: 116px;
-    padding: 8px;
-    border: 3px solid rgba(7, 55, 95, 0.65);
-    border-radius: 14px;
-    background: rgba(255, 247, 222, 0.72);
-    color: #07375f;
-    font-size: 12px;
-    font-weight: 900;
+    min-height: 0;
+    padding: 6px;
     overflow: hidden;
+    border: 2px solid rgba(7, 55, 95, 0.62);
+    border-radius: 11px;
+    background: rgba(255, 247, 222, 0.7);
+    color: #07375f;
+    font-size: 11px;
+    font-weight: 900;
 }
 
-.lote strong {
-    position: relative;
-    z-index: 1;
-    padding: 4px 6px;
-    border-radius: 7px;
-    background: rgba(255, 255, 255, 0.82);
-}
+.lote strong { position: relative; z-index: 1; padding: 3px 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.82); }
 
 .predio {
     position: relative;
     display: block;
-    width: 50px;
-    height: 42px;
-    margin-bottom: 5px;
+    width: 45px;
+    height: 37px;
     border: 3px solid #07375f;
-    border-radius: 8px 8px 4px 4px;
+    border-radius: 7px 7px 3px 3px;
     background: #b6e682;
-    box-shadow: 0 22px 0 -10px rgba(7, 55, 95, 0.2);
 }
 
 .predio::before,
-.predio::after {
-    content: "";
-    position: absolute;
-    background: rgba(255, 255, 255, 0.72);
-}
-
-.predio::before {
-    inset: 8px 9px auto;
-    height: 9px;
-    box-shadow: 0 14px 0 rgba(255, 255, 255, 0.72);
-}
-
-.predio::after {
-    width: 14px;
-    height: 18px;
-    left: 16px;
-    bottom: -3px;
-    border: 3px solid #07375f;
-    border-bottom: 0;
-    border-radius: 7px 7px 0 0;
-}
-
-.lote-vazio .predio {
-    border-style: dashed;
-    background: #d9f4c6;
-    opacity: 0.45;
-}
-
-.lote-educacao .predio {
-    background: #ffd66b;
-}
-
-.lote-saude .predio {
-    background: #fff;
-}
-
-.lote-verde .predio {
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    background: #42b83e;
-}
-
-.lote-comercio .predio {
-    background: #ff9a3d;
-}
-
-.lote-industria .predio {
-    background: #9aa6ad;
-}
-
-.lote-agua .predio {
-    background: #55c7f7;
-}
-
-.lote-energia .predio {
-    background: #ffe45d;
-}
-
-.terrenos {
-    width: max-content;
-    max-width: 100%;
-    margin: 12px auto 0;
-    padding: 10px 24px;
-    border: 3px solid #07375f;
-    border-radius: 13px;
-    background: #fff7de;
-    color: #07375f;
-    text-align: center;
-    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.18);
-}
-
-.terrenos span,
-.terrenos strong {
-    display: block;
-    font-weight: 900;
-}
-
-.evento {
-    padding: 12px;
-    border-radius: 12px;
-    background: #fff7de;
-    color: #3d2508;
-}
-
-.evento strong {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 20px;
-}
-
-.evento p {
-    margin: 0;
-    line-height: 1.35;
-}
-
-.barras-indicadores {
-    display: grid;
-    gap: 13px;
-}
-
-.barra-item div {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 4px;
-}
-
-.barra-item meter {
-    width: 100%;
-    height: 15px;
-}
-
-.historico {
-    max-height: 190px;
-    margin: 0;
-    padding-left: 18px;
-    overflow: auto;
-    line-height: 1.35;
-}
-
-.barra-inferior {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-}
-
-.aba,
-.botao-rodada {
-    min-height: 72px;
-    border: 4px solid #07375f;
-    border-radius: 14px;
-    color: white;
-    font-weight: 900;
-    font-size: 13px;
-    box-shadow: inset 0 5px rgba(255, 255, 255, 0.3), 0 7px 0 rgba(0, 0, 0, 0.22);
-}
-
-.aba {
-    background: linear-gradient(#2dbcf4, #116dc2);
-}
-
-.aba.ativa {
-    background: linear-gradient(#ffdb48, #f09b16);
-    color: #07375f;
-}
-
-.botao-rodada {
-    background: linear-gradient(#72df32, #299b20);
-    font-size: 16px;
-    text-transform: uppercase;
-}
-
-.construcoes-dock {
-    grid-column: 1 / -1;
-    padding: 12px;
-    background: #fff7de;
-}
-
-.dock-topo {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-}
-
-.dock-topo h2 {
-    margin: 0;
-    color: #07375f;
-    text-transform: uppercase;
-}
+.predio::after { content: ""; position: absolute; background: rgba(255, 255, 255, 0.74); }
+.predio::before { inset: 7px 8px auto; height: 7px; box-shadow: 0 12px 0 rgba(255, 255, 255, 0.74); }
+.predio::after { width: 12px; height: 15px; left: 14px; bottom: -3px; border: 2px solid #07375f; border-bottom: 0; border-radius: 5px 5px 0 0; }
+.lote-vazio .predio { border-style: dashed; background: #d9f4c6; opacity: 0.42; }
+.lote-educacao .predio { background: #ffd66b; }
+.lote-saude .predio { background: #fff; }
+.lote-verde .predio { width: 47px; height: 47px; border-radius: 50%; background: #42b83e; }
+.lote-comercio .predio { background: #ff9a3d; }
+.lote-industria .predio { background: #9aa6ad; }
+.lote-agua .predio { background: #55c7f7; }
+.lote-energia .predio { background: #ffe45d; }
 
 .mensagem {
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
+    left: 12px;
+    min-height: 20px;
     margin: 0;
-    min-height: 22px;
+    padding: 5px 10px;
+    border-radius: 7px;
+    background: rgba(255, 247, 222, 0.92);
     color: #075591;
+    font-size: 12px;
     font-weight: 900;
-    text-align: right;
+    text-align: center;
 }
+.mensagem.feedback-acao { animation: feedback-acao 450ms ease; }
+@keyframes feedback-acao { 0% { transform: translateY(8px); opacity: 0.35; } 100% { transform: none; opacity: 1; } }
 
-.lista-construcoes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 10px;
-    margin-top: 10px;
-}
+.coluna-contexto { display: grid; grid-template-rows: auto 1fr auto; gap: 9px; min-height: 0; }
 
-.card-construcao {
-    display: grid;
-    gap: 8px;
-    min-height: 164px;
-    padding: 12px;
-    border: 3px solid #07375f;
-    border-radius: 12px;
-    background: white;
-    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.14);
-}
+.perfil-prefeito,
+.painel-alertas,
+.decisao-rodada { background: var(--claro); }
+.perfil-prefeito { display: flex; align-items: center; gap: 10px; padding: 9px; }
+.perfil-prefeito strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.card-construcao strong {
-    display: block;
-    color: #07375f;
-    font-size: 18px;
-}
+.painel-alertas { min-height: 0; padding: 12px; overflow: hidden; }
+.titulo-alertas { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.titulo-alertas h2 { margin: 0; color: #07375f; font-size: 18px; text-transform: uppercase; }
+.titulo-alertas span { font-size: 10px; font-weight: 800; opacity: 0.65; text-transform: uppercase; }
+.lista-alertas { display: grid; gap: 8px; margin-top: 10px; }
 
-.card-construcao small,
-.card-construcao p {
-    margin: 0;
-    color: #334355;
-    line-height: 1.3;
-}
-
-.card-construcao button {
-    align-self: end;
+.alerta {
     padding: 10px;
+    border-left: 5px solid #3b93ce;
     border-radius: 9px;
-    background: linear-gradient(#72df32, #299b20);
-    color: white;
-    font-weight: 900;
-    text-transform: uppercase;
+    background: #e8f5fc;
+    font-size: 12px;
+    line-height: 1.35;
 }
 
-@media (max-width: 1220px) {
-    .jogo-shell {
-        grid-template-columns: 1fr;
-    }
+.alerta strong { display: block; margin-bottom: 2px; color: #07375f; }
+.alerta-atencao { border-color: #e6a61a; background: #fff1c9; }
+.alerta-critico { border-color: #d8463e; background: #ffe0dc; }
 
-    .sidebar-esquerda,
-    .sidebar-direita {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 10px;
-    }
+.decisao-rodada { padding: 11px; }
+.decisao-rodada p { margin: 5px 0 10px; font-size: 12px; line-height: 1.35; }
+.botao-finalizar { width: 100%; padding: 9px; border: 2px solid #07375f; border-radius: 8px; background: #e7eef2; color: #07375f; font-size: 11px; font-weight: 900; text-transform: uppercase; }
 
-    .mini-logo {
-        display: none;
-    }
+.barra-inferior { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.aba { min-height: 54px; border: 3px solid #07375f; border-radius: 12px; background: linear-gradient(#2dbcf4, #116dc2); color: white; font-size: 13px; font-weight: 900; box-shadow: inset 0 4px rgba(255, 255, 255, 0.28), 0 5px 0 rgba(0, 0, 0, 0.2); }
+.aba.ativa { background: linear-gradient(#ffdb48, #f09b16); color: #07375f; }
+.aba kbd { margin-left: 4px; padding: 1px 5px; border: 1px solid currentColor; border-radius: 4px; background: rgba(255, 255, 255, 0.14); font-size: 9px; }
 
-    .painel-jogo,
-    .perfil-prefeito {
-        margin-bottom: 0;
-    }
-
-    .indicadores-topo {
-        grid-template-columns: repeat(3, minmax(120px, 1fr));
-    }
+.painel-operacional {
+    position: absolute;
+    z-index: 8;
+    right: 9px;
+    bottom: 9px;
+    left: 9px;
+    max-height: min(290px, calc(100% - 70px));
+    overflow: hidden;
+    background: var(--claro);
+    transform: translateY(calc(100% + 18px));
+    visibility: hidden;
+    transition: transform 220ms ease;
 }
 
-@media (max-width: 720px) {
-    .menu-cena {
-        padding: 18px;
-        overflow: auto;
-    }
+.painel-operacional.aberto { transform: none; visibility: visible; }
+.painel-operacional-topo { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 2px solid #c9d4d8; }
+.painel-operacional-topo h2 { margin: 0; color: #07375f; font-size: 17px; text-transform: uppercase; }
+.painel-operacional-topo button { width: 30px; height: 30px; border-radius: 7px; background: #dce8ef; color: #07375f; font-size: 22px; line-height: 1; }
+.conteudo-painel { max-height: 235px; padding: 10px; overflow: auto; }
 
-    .menu-card {
-        padding: 18px;
-        border-width: 5px;
-        border-radius: 20px;
-    }
+.lista-construcoes { display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 8px; }
+.card-construcao { display: grid; grid-template-rows: auto 1fr auto; gap: 5px; min-height: 142px; padding: 9px; border: 2px solid #9eb2bd; border-radius: 9px; background: white; }
+.card-construcao strong { display: block; color: #07375f; font-size: 15px; }
+.card-construcao small,
+.card-construcao p { margin: 0; color: #334355; font-size: 11px; line-height: 1.3; }
+.card-construcao button { padding: 8px; border-radius: 7px; background: linear-gradient(#72df32, #299b20); color: white; font-size: 11px; font-weight: 900; text-transform: uppercase; }
 
-    .botoes-menu-secundarios {
-        position: relative;
-        inset: auto;
-        width: min(590px, 100%);
-        margin-top: 22px;
-    }
+.categorias-construcoes { display: flex; gap: 6px; margin-bottom: 9px; overflow-x: auto; padding-bottom: 3px; }
+.categorias-construcoes button { flex: 0 0 auto; padding: 7px 10px; border: 2px solid #8aa4b3; border-radius: 999px; background: white; color: #07375f; font-size: 11px; font-weight: 900; }
+.categorias-construcoes button.ativa { border-color: #07375f; background: #ffc928; }
+.selecao-construcao { position: absolute; z-index: 9; right: 20%; bottom: 18px; left: 20%; padding: 9px 12px; border: 2px solid #174d20; border-radius: 9px; background: #dff4d3; color: #174d20; font-size: 12px; box-shadow: 0 5px 14px var(--sombra); }
+.selecao-construcao button { float: right; padding: 3px 8px; border-radius: 5px; background: #174d20; color: white; }
+.card-construcao b { float: right; color: #075591; font-size: 12px; }
+.card-construcao .beneficio { color: #247018; font-weight: 800; }
 
-    .botao-quadrado {
-        width: 82px;
-        height: 82px;
-        font-size: 32px;
-    }
+.lote.selecionavel { outline: 4px solid #65df4f; outline-offset: -5px; animation: pulso-lote 800ms ease-in-out infinite alternate; }
+.lote.invalido { outline: 4px solid #df4b43; outline-offset: -5px; }
+.lote.selecionavel:hover { background: rgba(125, 235, 89, 0.85); transform: translateY(-2px); }
+@keyframes pulso-lote { to { outline-color: #e9ff79; } }
 
-    .pagina-jogo {
-        padding: 6px;
-    }
+.economia-completa { display: grid; grid-template-columns: 1fr 1fr 0.8fr 1.2fr; gap: 9px; }
+.economia-completa > section { padding: 10px; border-radius: 9px; background: white; }
+.economia-completa h3 { margin: 0 0 8px; color: #07375f; font-size: 13px; text-transform: uppercase; }
+.previsao-economia { display: grid; place-content: center; text-align: center; }
+.previsao-economia span, .previsao-economia small { font-size: 10px; font-weight: 800; text-transform: uppercase; }
+.previsao-economia strong { margin: 7px 0; font-size: 25px; }
+.controle-imposto { display: grid; grid-template-columns: 1fr 25px 36px 25px; align-items: center; gap: 4px; margin-top: 5px; font-size: 11px; }
+.controle-imposto button { width: 25px; height: 25px; border-radius: 6px; background: #dce8ef; color: #07375f; font-weight: 900; }
+.controle-imposto strong { text-align: center; }
 
-    .jogo-shell {
-        min-height: calc(100vh - 12px);
-    }
+.painel-predio { position: absolute; z-index: 10; top: 12px; right: 12px; width: min(280px, calc(100% - 24px)); padding: 14px; border: 3px solid #07375f; border-radius: 12px; background: #fff7de; box-shadow: 0 8px 20px var(--sombra); }
+.painel-predio[aria-hidden="true"] { display: none; }
+.painel-predio h2 { margin: 2px 0 4px; color: #07375f; }
+.fechar-detalhe { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border-radius: 6px; background: #dce8ef; }
+.acoes-predio { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px; }
+.acoes-predio button { padding: 8px; border-radius: 7px; background: #1689cf; color: white; font-size: 10px; font-weight: 900; text-transform: uppercase; }
+.acoes-predio button:first-child { grid-column: 1 / -1; background: #48ad29; }
+.acoes-predio .perigo, .botao-perigo { background: #c83d36; color: white; }
+.botao-perigo { width: 100%; padding: 12px 16px; border-radius: 10px; font-weight: 900; }
+.aviso-eficiencia { margin: 7px 0 0; padding: 6px; border-radius: 6px; background: #ffe1bc; color: #793d00; font-size: 11px; font-weight: 800; }
 
-    .indicadores-topo {
-        grid-template-columns: repeat(2, minmax(130px, 1fr));
-    }
+.grupo-indicadores { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 10px; }
+.grupo-indicadores section { padding: 11px; border-radius: 10px; background: white; }
+.grupo-indicadores h3 { margin: 0 0 10px; color: #07375f; font-size: 14px; text-transform: uppercase; }
+.grupo-indicadores section > small { display: block; margin-top: 5px; color: #526474; font-size: 10px; }
+.fontes-poluicao { margin-top: 8px; padding-top: 7px; border-top: 1px solid #d4dde2; }
+.lista-economia { display: grid; grid-template-columns: 1fr auto; gap: 7px 12px; margin: 0; font-size: 12px; }
+.lista-economia dd { margin: 0; font-weight: 900; }
+.positivo { color: #29820e; }
+.negativo { color: #c0322b; }
+.barra-item { margin-bottom: 9px; }
+.barra-item div { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 3px; font-size: 12px; }
+.barra-item meter { width: 100%; height: 12px; }
+.evento { padding: 10px; border-radius: 8px; background: #fff1c9; font-size: 12px; }
+.evento strong { display: block; margin-bottom: 4px; }
+.evento p { margin: 0; line-height: 1.35; }
+.historico { max-height: 150px; margin: 0; padding-left: 18px; overflow: auto; font-size: 12px; line-height: 1.4; }
 
-    .mapa {
-        grid-template-columns: repeat(2, minmax(120px, 1fr));
-    }
+.overlay-transicao { z-index: 30; background: rgba(6, 55, 95, 0.52); }
+.resumo-rodada { text-align: center; }
+.resumo-rodada ul { display: grid; gap: 7px; margin: 15px 0; padding: 0; list-style: none; }
+.resumo-rodada li { padding: 7px; border-radius: 7px; background: white; font-weight: 800; }
+.contagem-proxima { display: block; min-height: 30px; color: #075591; font-size: 24px; }
+.acoes-modal { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
 
-    .barra-inferior {
-        grid-template-columns: repeat(2, 1fr);
-    }
+@media (max-width: 1100px) {
+    .hud-principal { grid-template-columns: 90px minmax(0, 1fr) 170px; }
+    .mini-logo { font-size: 23px; }
+    .indicadores-topo { grid-template-columns: repeat(5, minmax(84px, 1fr)); }
+    .indicador-topo { padding: 8px 7px; }
+    .indicador-topo strong { font-size: 17px; }
+    .jogo-corpo { grid-template-columns: minmax(0, 1fr) 220px; }
+    .lista-construcoes { grid-template-columns: repeat(2, minmax(190px, 1fr)); }
+    .economia-completa { grid-template-columns: 1fr 1fr; }
+}
 
-    .botao-rodada {
-        grid-column: 1 / -1;
-    }
+@media (max-width: 760px) {
+    .pagina-menu { overflow: auto; }
+    .menu-cena { padding: 18px; overflow: auto; }
+    .menu-card { padding: 18px; border-width: 5px; border-radius: 20px; }
+    .pagina-jogo { height: auto; min-height: 100vh; padding: 6px; overflow-y: auto; }
+    .jogo-shell { grid-template-rows: auto auto 58px; height: auto; min-height: calc(100vh - 12px); }
+    .hud-principal { grid-template-columns: 1fr 160px; }
+    .mini-logo { display: none; }
+    .indicadores-topo { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+    .indicador-topo:last-child { grid-column: 1 / -1; }
+    .timer-card { grid-column: 2; grid-row: 1; }
+    .jogo-corpo { grid-template-columns: 1fr; }
+    .area-cidade { min-height: 540px; }
+    .coluna-contexto { grid-template-columns: 1fr; }
+    .mapa { grid-template-columns: repeat(2, minmax(100px, 1fr)); grid-template-rows: repeat(8, 90px); height: auto; padding-bottom: 30px; }
+    .painel-operacional { position: fixed; right: 6px; bottom: 70px; left: 6px; max-height: 65vh; }
+    .conteudo-painel { max-height: calc(65vh - 50px); }
+    .lista-construcoes,
+    .grupo-indicadores,
+    .economia-completa { grid-template-columns: 1fr; }
+    .barra-inferior { position: sticky; z-index: 10; bottom: 0; }
+    .aba kbd { display: none; }
+}
 
-    .dock-topo {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .mensagem {
-        text-align: left;
-    }
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }

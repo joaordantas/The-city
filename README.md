@@ -25,6 +25,13 @@ python app.py
 http://127.0.0.1:5000
 ```
 
+## Testes
+
+```bash
+python -m unittest discover -s tests -p "test_*.py"
+node tests/test_rodadas.mjs
+```
+
 ## Estrutura principal
 
 ```text
@@ -38,6 +45,7 @@ game/jogo.py            Coordena os sistemas do jogo
 templates/index.html    Interface principal
 static/css/style.css    Visual do jogo
 static/js/game.js       Comunicacao com a API e atualizacao da tela
+static/js/rodadas.js    Timer, pausa e encerramento das rodadas
 ```
 
 ## Organizacao
@@ -45,3 +53,13 @@ static/js/game.js       Comunicacao com a API e atualizacao da tela
 O projeto possui uma unica versao ativa: o Flask serve as paginas de
 `templates/`, os arquivos visuais ficam em `static/` e as regras do jogo ficam
 isoladas no pacote `game/`.
+
+## Simulacao
+
+As construcoes sao organizadas por categoria e posicionadas diretamente no
+grid. Agua e energia usam capacidade, demanda e sobrecarga; a eficiencia dos
+predios conecta esses recursos a empregos, servicos, receita e poluicao.
+
+O painel de economia apresenta receitas, despesas, previsao da rodada e os
+impostos residencial, comercial e industrial. Predios podem ser melhorados,
+movidos e demolidos sem duplicar efeitos.

@@ -4,89 +4,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The City - Jogo</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=6">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=9">
 </head>
 <body class="pagina-jogo">
     <main class="jogo-shell">
-        <aside class="sidebar-esquerda">
-            <a class="mini-logo" href="/">
-                <span>The</span>
-                City
-            </a>
-
-            <section class="perfil-prefeito painel-azul">
-                <span class="avatar-prefeito">P</span>
-                <div>
-                    <span class="rotulo">Prefeito</span>
-                    <strong id="prefeito-atual">-</strong>
+        <header class="hud-principal">
+            <a class="mini-logo" href="/" aria-label="Voltar ao menu"><span>The</span> City</a>
+            <section id="indicadores-topo" class="indicadores-topo" aria-label="Indicadores principais"></section>
+            <section id="timer-card" class="timer-card" aria-live="polite">
+                <div class="timer-cabecalho">
+                    <strong id="numero-rodada">Rodada 01/20</strong>
+                    <button id="botao-pausa" class="botao-icone-hud" type="button" aria-label="Pausar jogo" title="Pausar (Esc)">II</button>
                 </div>
+                <time id="tempo-rodada">01:00</time>
+                <span id="calendario-rodada" class="calendario-rodada">Janeiro · Ano 1</span>
+                <span class="barra-tempo" aria-hidden="true"><span id="progresso-tempo"></span></span>
             </section>
+        </header>
 
-            <section class="painel-jogo painel-azul">
-                <h2>Economia</h2>
-                <dl id="painel-economia" class="lista-economia"></dl>
-            </section>
-
-            <section class="painel-jogo painel-roxo">
-                <h2>Tesouraria</h2>
-                <dl id="painel-tesouraria" class="lista-economia"></dl>
-            </section>
-        </aside>
-
-        <section class="area-principal">
-            <header id="indicadores-topo" class="indicadores-topo"></header>
-
-            <section class="mapa-card">
-                <div class="mapa-topo">
-                    <div>
-                        <span class="rotulo">Mapa da cidade</span>
-                        <h1>Cidade em Equilibrio</h1>
+        <section class="jogo-corpo">
+            <section class="area-cidade">
+                <section class="mapa-card">
+                    <div class="mapa-topo">
+                        <div>
+                            <span class="rotulo">Cidade de <strong id="prefeito-atual">-</strong></span>
+                            <h1>Cidade em Equilibrio</h1>
+                        </div>
+                        <div class="terrenos">
+                            <span>Terrenos</span>
+                            <strong id="terrenos-livres">0 / 16</strong>
+                        </div>
                     </div>
-                    <a class="botao-voltar" href="/">Menu</a>
-                </div>
-                <div id="mapa" class="mapa"></div>
-                <div class="terrenos">
-                    <span>Terrenos disponiveis</span>
-                    <strong id="terrenos-livres">0 / 16</strong>
-                </div>
+                    <div id="mapa" class="mapa" aria-label="Mapa da cidade"></div>
+                    <p id="mensagem" class="mensagem" role="status"></p>
+                </section>
+
+                <section id="painel-operacional" class="painel-operacional" aria-hidden="true">
+                    <header class="painel-operacional-topo">
+                        <h2 id="titulo-painel">Construir</h2>
+                        <button id="fechar-painel" type="button" aria-label="Fechar painel">×</button>
+                    </header>
+                    <div id="painel-construir" class="conteudo-painel">
+                        <div id="categorias-construcoes" class="categorias-construcoes"></div>
+                        <div id="lista-construcoes" class="lista-construcoes"></div>
+                    </div>
+                    <div id="painel-economia-conteudo" class="conteudo-painel" hidden>
+                        <div class="economia-completa">
+                            <section><h3>Receitas</h3><dl id="painel-economia" class="lista-economia"></dl></section>
+                            <section><h3>Despesas</h3><dl id="painel-tesouraria" class="lista-economia"></dl></section>
+                            <section class="previsao-economia"><span>Previsao da rodada</span><strong id="previsao-rodada">R$ 0</strong><small>Se o tempo terminasse agora</small></section>
+                            <section class="impostos-painel"><h3>Impostos</h3><div id="controles-impostos"></div></section>
+                        </div>
+                    </div>
+                    <div id="painel-indicadores-conteudo" class="conteudo-painel" hidden>
+                        <div id="painel-indicadores" class="grupo-indicadores"></div>
+                    </div>
+                    <div id="painel-eventos-conteudo" class="conteudo-painel" hidden>
+                        <div class="grupo-indicadores">
+                            <section><h3>Evento ativo</h3><div id="evento-ativo" class="evento"></div></section>
+                            <section><h3>Historico recente</h3><ul id="historico" class="historico"></ul></section>
+                        </div>
+                    </div>
+                </section>
+                <div id="selecao-construcao" class="selecao-construcao" hidden></div>
+
+                <aside id="painel-predio" class="painel-predio" aria-hidden="true"></aside>
             </section>
 
-            <footer class="barra-inferior">
-                <button class="aba ativa" type="button">Construir</button>
-                <button class="aba" type="button">Economia</button>
-                <button class="aba" type="button">Servicos</button>
-                <button class="aba" type="button">Eventos</button>
-                <button class="aba" type="button">Relatorios</button>
-                <button id="botao-rodada" class="botao-rodada" type="button">Proxima rodada</button>
-            </footer>
+            <aside class="coluna-contexto">
+                <section class="perfil-prefeito">
+                    <span class="avatar-prefeito">P</span>
+                    <div><span class="rotulo">Prefeito</span><strong id="nome-prefeito-lateral">-</strong></div>
+                </section>
+                <section class="painel-alertas">
+                    <div class="titulo-alertas"><h2>Alertas</h2><span>Prioridades</span></div>
+                    <div id="lista-alertas" class="lista-alertas"></div>
+                </section>
+                <section class="decisao-rodada">
+                    <span class="rotulo">Decisao atual</span>
+                    <p>Resolva primeiro o que mais ameaca a cidade.</p>
+                    <button id="botao-finalizar" class="botao-finalizar" type="button">Finalizar rodada</button>
+                </section>
+            </aside>
         </section>
 
-        <aside class="sidebar-direita">
-            <section class="painel-jogo painel-evento">
-                <h2>Evento ativo</h2>
-                <div id="evento-ativo" class="evento"></div>
-            </section>
-
-            <section class="painel-jogo painel-azul">
-                <h2>Indicadores</h2>
-                <div id="painel-indicadores" class="barras-indicadores"></div>
-            </section>
-
-            <section class="painel-jogo painel-roxo">
-                <h2>Historico</h2>
-                <ul id="historico" class="historico"></ul>
-            </section>
-        </aside>
-
-        <section class="construcoes-dock">
-            <div class="dock-topo">
-                <h2>Construcoes</h2>
-                <p id="mensagem" class="mensagem"></p>
-            </div>
-            <div id="lista-construcoes" class="lista-construcoes"></div>
-        </section>
+        <nav class="barra-inferior" aria-label="Paineis do jogo">
+            <button class="aba" type="button" data-painel="construir">Construir <kbd>B</kbd></button>
+            <button class="aba" type="button" data-painel="economia">Economia <kbd>E</kbd></button>
+            <button class="aba" type="button" data-painel="indicadores">Indicadores</button>
+            <button class="aba" type="button" data-painel="eventos">Eventos</button>
+        </nav>
     </main>
 
-    <script src="{{ url_for('static', filename='js/game.js') }}?v=3"></script>
+    <section id="overlay-transicao" class="overlay-transicao" aria-hidden="true">
+        <div class="resumo-rodada">
+            <span id="fase-transicao" class="rotulo">Processando cidade...</span>
+            <h2 id="titulo-resumo">Rodada concluida</h2>
+            <ul id="itens-resumo"></ul>
+            <strong id="contagem-proxima" class="contagem-proxima"></strong>
+        </div>
+    </section>
+
+    <section id="modal-pausa" class="modal-jogo" aria-hidden="true">
+        <div class="modal-card">
+            <span class="rotulo">Jogo pausado</span>
+            <h2>Respire. O tempo esta parado.</h2>
+            <p>A troca de aba e os paineis normais nao pausam a rodada.</p>
+            <button id="botao-retomar" class="botao-primario" type="button">Retomar</button>
+            <a class="botao-secundario" href="/">Voltar ao menu</a>
+        </div>
+    </section>
+
+    <section id="modal-confirmacao" class="modal-jogo" aria-hidden="true">
+        <div class="modal-card">
+            <span class="rotulo">Finalizar antes</span>
+            <h2>Encerrar esta rodada agora?</h2>
+            <p>Ainda restam <strong id="segundos-confirmacao">0 segundos</strong>. Nao existe bonus por terminar antes.</p>
+            <div class="acoes-modal">
+                <button id="cancelar-finalizacao" class="botao-secundario" type="button">Cancelar</button>
+                <button id="confirmar-finalizacao" class="botao-primario" type="button">Encerrar</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="modal-demolicao" class="modal-jogo" aria-hidden="true">
+        <div class="modal-card">
+            <span class="rotulo">Demolir predio</span>
+            <h2 id="titulo-demolicao">Confirmar demolicao?</h2>
+            <p>Os beneficios e custos recorrentes serao removidos.</p>
+            <p>Reembolso: <strong id="reembolso-demolicao">R$ 0</strong></p>
+            <div class="acoes-modal">
+                <button id="cancelar-demolicao" class="botao-secundario" type="button">Cancelar</button>
+                <button id="confirmar-demolicao" class="botao-perigo" type="button">Demolir</button>
+            </div>
+        </div>
+    </section>
+
+    <script type="module" src="{{ url_for('static', filename='js/game.js') }}?v=5"></script>
 </body>
 </html>
