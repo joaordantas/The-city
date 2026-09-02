@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The City</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=7">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=12">
 </head>
 <body class="pagina-menu">
     <input class="controle-tutorial" id="tutorial-toggle" type="checkbox" aria-hidden="true">
@@ -34,6 +34,8 @@
                     <span class="botao-icone">?</span>
                     Tutorial
                 </label>
+                <button class="botao-grande botao-menu-secundario" type="button" data-abrir-menu="configuracoes"><span class="botao-icone">⚙</span>Configuracoes</button>
+                <button class="botao-grande botao-menu-secundario" type="button" data-abrir-menu="creditos"><span class="botao-icone">i</span>Creditos</button>
             </form>
         </section>
 
@@ -47,5 +49,24 @@
             <label id="fechar-tutorial" for="tutorial-toggle" role="button" tabindex="0">Entendi</label>
         </div>
     </section>
+    <section id="modal-configuracoes" class="modal-jogo" aria-hidden="true">
+        <div class="modal-card">
+            <h2>Configuracoes</h2>
+            <div class="configuracoes-jogo">
+                <label><input id="menu-animacoes" type="checkbox" checked> Animacoes da cidade</label>
+                <label><input id="menu-sons" type="checkbox" checked> Efeitos sonoros</label>
+            </div>
+            <button class="botao-secundario" type="button" data-fechar-menu>Fechar</button>
+        </div>
+    </section>
+    <section id="modal-creditos" class="modal-jogo" aria-hidden="true">
+        <div class="modal-card">
+            <h2>Creditos</h2>
+            <p>Concepcao e desenvolvimento: equipe The City.</p>
+            <p>Interface, formas urbanas, animacoes e sons sao gerados pelo proprio codigo. Nenhum recurso externo ou licenca adicional e utilizado.</p>
+            <button class="botao-secundario" type="button" data-fechar-menu>Fechar</button>
+        </div>
+    </section>
+    <script type="module" src="{{ url_for('static', filename='js/menu.js') }}?v=3"></script>
 </body>
 </html>

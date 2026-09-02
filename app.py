@@ -65,10 +65,55 @@ def melhorar():
     return jsonify(jogo.melhorar(dados.get("predio_id")))
 
 
+@app.post("/api/expandir")
+def expandir():
+    dados = request.get_json(silent=True) or {}
+    return jsonify(jogo.expandir(dados.get("setor_id")))
+
+
+@app.post("/api/remover-obstaculo")
+def remover_obstaculo():
+    dados = request.get_json(silent=True) or {}
+    return jsonify(jogo.remover_obstaculo(dados.get("posicao")))
+
+
+@app.post("/api/construir-estrada")
+def construir_estrada():
+    dados = request.get_json(silent=True) or {}
+    return jsonify(jogo.construir_estrada(dados.get("posicao")))
+
+
+@app.post("/api/logistica/entregar")
+def entregar_pedido():
+    return jsonify(jogo.entregar_pedido())
+
+
+@app.post("/api/logistica/recusar")
+def recusar_pedido():
+    return jsonify(jogo.recusar_pedido())
+
+
+@app.post("/api/projetos/investir")
+def investir_projeto():
+    dados = request.get_json(silent=True) or {}
+    return jsonify(jogo.investir_projeto(dados.get("projeto_id")))
+
+
+@app.post("/api/reiniciar")
+def reiniciar():
+    return jsonify(jogo.reiniciar())
+
+
 @app.post("/api/imposto")
 def alterar_imposto():
     dados = request.get_json(silent=True) or {}
     return jsonify(jogo.alterar_imposto(dados.get("tipo"), dados.get("direcao")))
+
+
+@app.post("/api/evento/responder")
+def responder_evento():
+    dados = request.get_json(silent=True) or {}
+    return jsonify(jogo.responder_evento(dados.get("escolha_id")))
 
 
 @app.post("/api/proxima-rodada")

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The City - Jogo</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=9">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=12">
 </head>
 <body class="pagina-jogo">
     <main class="jogo-shell">
@@ -35,7 +35,17 @@
                             <strong id="terrenos-livres">0 / 16</strong>
                         </div>
                     </div>
+                    <div id="acoes-territorio" class="acoes-territorio" aria-label="Acoes territoriais">
+                        <button type="button" data-modo-mapa="estrada">Construir estrada</button>
+                        <button type="button" data-abrir-expansao>Expandir cidade</button>
+                        <span id="estado-transito">Transito: fluindo</span>
+                    </div>
+                    <aside class="missoes-hud" aria-label="Missoes atuais">
+                        <header><span class="rotulo">Missoes</span><strong id="progresso-missoes">0 pts</strong></header>
+                        <div id="lista-missoes" class="lista-missoes"></div>
+                    </aside>
                     <div id="mapa" class="mapa" aria-label="Mapa da cidade"></div>
+                    <canvas id="cidade-viva" class="cidade-viva" aria-hidden="true"></canvas>
                     <p id="mensagem" class="mensagem" role="status"></p>
                 </section>
 
@@ -62,7 +72,25 @@
                     <div id="painel-eventos-conteudo" class="conteudo-painel" hidden>
                         <div class="grupo-indicadores">
                             <section><h3>Evento ativo</h3><div id="evento-ativo" class="evento"></div></section>
-                            <section><h3>Historico recente</h3><ul id="historico" class="historico"></ul></section>
+                            <section><h3>Efeitos temporarios</h3><div id="efeitos-temporarios" class="lista-efeitos"></div></section>
+                            <section><h3>Consequencias futuras</h3><div id="consequencias-futuras" class="lista-efeitos"></div></section>
+                        </div>
+                    </div>
+                    <div id="painel-producao-conteudo" class="conteudo-painel" hidden>
+                        <div class="grade-avancada">
+                            <section><h3>Estoque municipal</h3><div id="estoque-recursos"></div></section>
+                            <section><h3>Producao automatica</h3><div id="previsao-producao"></div></section>
+                            <section><h3>Pedido logistico</h3><div id="pedido-logistico"></div></section>
+                        </div>
+                    </div>
+                    <div id="painel-projetos-conteudo" class="conteudo-painel" hidden>
+                        <div id="lista-projetos" class="lista-projetos"></div>
+                    </div>
+                    <div id="painel-prefeitura-conteudo" class="conteudo-painel" hidden>
+                        <div class="prefeitura-grade">
+                            <section><h3>Visao geral</h3><div id="prefeitura-visao"></div></section>
+                            <section><h3>Plano de Governo</h3><div id="plano-governo"></div></section>
+                            <section class="historico-prefeitura"><h3>Historico por rodada</h3><ul id="historico" class="historico"></ul></section>
                         </div>
                     </div>
                 </section>
@@ -76,8 +104,13 @@
                     <span class="avatar-prefeito">P</span>
                     <div><span class="rotulo">Prefeito</span><strong id="nome-prefeito-lateral">-</strong></div>
                 </section>
+                <section id="conselheiro" class="conselheiro" hidden></section>
+                <section id="cartao-evento" class="cartao-evento" hidden>
+                    <span class="rotulo">Decisao pendente</span>
+                    <div id="evento-contexto"></div>
+                </section>
                 <section class="painel-alertas">
-                    <div class="titulo-alertas"><h2>Alertas</h2><span>Prioridades</span></div>
+                    <div class="titulo-alertas"><h2>Alertas</h2><span id="estado-crise">Prioridades</span></div>
                     <div id="lista-alertas" class="lista-alertas"></div>
                 </section>
                 <section class="decisao-rodada">
@@ -92,6 +125,9 @@
             <button class="aba" type="button" data-painel="construir">Construir <kbd>B</kbd></button>
             <button class="aba" type="button" data-painel="economia">Economia <kbd>E</kbd></button>
             <button class="aba" type="button" data-painel="indicadores">Indicadores</button>
+            <button class="aba" type="button" data-painel="producao">Producao</button>
+            <button class="aba" type="button" data-painel="projetos">Projetos</button>
+            <button class="aba" type="button" data-painel="prefeitura">Prefeitura</button>
             <button class="aba" type="button" data-painel="eventos">Eventos</button>
         </nav>
     </main>
@@ -105,12 +141,27 @@
         </div>
     </section>
 
+    <section id="modal-tutorial-jogo" class="modal-jogo" aria-hidden="true">
+        <div class="modal-card tutorial-obrigatorio">
+            <span class="rotulo">Orientacao inicial</span>
+            <h2 id="titulo-tutorial-jogo">Voce tem 60 segundos</h2>
+            <p id="texto-tutorial-jogo"></p>
+            <div id="passos-tutorial" class="passos-tutorial"></div>
+            <button id="avancar-tutorial" class="botao-primario" type="button">Continuar</button>
+        </div>
+    </section>
+
     <section id="modal-pausa" class="modal-jogo" aria-hidden="true">
         <div class="modal-card">
             <span class="rotulo">Jogo pausado</span>
             <h2>Respire. O tempo esta parado.</h2>
             <p>A troca de aba e os paineis normais nao pausam a rodada.</p>
+            <div class="configuracoes-jogo">
+                <label><input id="config-animacoes" type="checkbox" checked> Animacoes da cidade</label>
+                <label><input id="config-sons" type="checkbox" checked> Efeitos sonoros</label>
+            </div>
             <button id="botao-retomar" class="botao-primario" type="button">Retomar</button>
+            <button id="botao-reiniciar" class="botao-perigo" type="button">Reiniciar cidade</button>
             <a class="botao-secundario" href="/">Voltar ao menu</a>
         </div>
     </section>
@@ -140,6 +191,27 @@
         </div>
     </section>
 
-    <script type="module" src="{{ url_for('static', filename='js/game.js') }}?v=5"></script>
+    <section id="modal-expansao" class="modal-jogo" aria-hidden="true">
+        <div class="modal-card">
+            <span class="rotulo">Expansao territorial</span>
+            <h2>Escolha um novo setor</h2>
+            <div id="lista-setores" class="lista-setores"></div>
+            <button id="fechar-expansao" class="botao-secundario" type="button">Fechar</button>
+        </div>
+    </section>
+
+    <section id="modal-reinicio" class="modal-jogo" aria-hidden="true">
+        <div class="modal-card">
+            <span class="rotulo">Reiniciar cidade</span>
+            <h2>Apagar todo o progresso atual?</h2>
+            <p>Construcoes, rodadas, estoque, projetos e historico voltarao ao estado inicial.</p>
+            <div class="acoes-modal">
+                <button id="cancelar-reinicio" class="botao-secundario" type="button">Cancelar</button>
+                <button id="confirmar-reinicio" class="botao-perigo" type="button">Reiniciar</button>
+            </div>
+        </div>
+    </section>
+
+    <script type="module" src="{{ url_for('static', filename='js/game.js') }}?v=10"></script>
 </body>
 </html>
