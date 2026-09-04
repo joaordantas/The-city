@@ -1,4 +1,5 @@
 from threading import Lock
+from time import time
 
 from .avaliacao import calcular_avaliacao
 from .cidade import Cidade
@@ -85,10 +86,65 @@ class JogoCidade:
     def __init__(self):
         self.cidade = Cidade()
         self._bloqueio = Lock()
+        self._preparar_timer("inicio")
+
+    def _duracao_rodada_ms(self, rodada=None):
+        rodada = rodada or self.cidade.dados["rodada"]
+        faixa = next(
+            item for item in CONFIG_RODADAS["duracoes"]
+            if item["inicio"] <= rodada <= item["fim"]
+        )
+        return faixa["tempo"] * 1000
+
+    def _preparar_timer(self, motivo="transicao"):
+        self.cidade.timer = {
+            "rodada": self.cidade.dados["rodada"],
+            "restante_ms": self._duracao_rodada_ms(),
+            "fim_em_ms": None,
+            "pausado": True,
+            "motivo_pausa": motivo,
+        }
+
+    def estado_timer(self):
+        timer = self.cidade.timer
+        rodada = self.cidade.dados["rodada"]
+        if timer.get("rodada") != rodada:
+            self._preparar_timer("transicao")
+            timer = self.cidade.timer
+        restante = timer["restante_ms"]
+        if not timer["pausado"] and timer.get("fim_em_ms") is not None:
+            restante = max(0, round(timer["fim_em_ms"] - time() * 1000))
+        return {**timer, "restante_ms": restante, "agora_ms": round(time() * 1000)}
+
+    def retomar_timer(self):
+        with self._bloqueio:
+            if not self._partida_ativa():
+                return {"sucesso": False, "mensagem": "A partida ja terminou.", **self.estado()}
+            timer = self.cidade.timer
+            if not timer["pausado"]:
+                return {"sucesso": True, "mensagem": "Cronometro ja estava em andamento.", **self.estado()}
+            timer["fim_em_ms"] = round(time() * 1000) + max(0, timer["restante_ms"])
+            timer["pausado"] = False
+            timer["motivo_pausa"] = None
+            return {"sucesso": True, "mensagem": "Cronometro iniciado.", **self.estado()}
+
+    def pausar_timer(self):
+        with self._bloqueio:
+            if not self._partida_ativa():
+                return {"sucesso": False, "mensagem": "A partida ja terminou.", **self.estado()}
+            timer = self.cidade.timer
+            if timer["pausado"]:
+                return {"sucesso": True, "mensagem": "Cronometro ja estava pausado.", **self.estado()}
+            timer["restante_ms"] = self.estado_timer()["restante_ms"]
+            timer["fim_em_ms"] = None
+            timer["pausado"] = True
+            timer["motivo_pausa"] = "usuario"
+            return {"sucesso": True, "mensagem": "Jogo pausado.", **self.estado()}
 
     def novo_jogo(self, prefeito):
         with self._bloqueio:
             self.cidade = Cidade(prefeito)
+            self._preparar_timer("inicio")
             self.cidade.registrar_historico(
                 "inicio",
                 "Bem-vindo a Cidade em Equilibrio",
@@ -114,6 +170,7 @@ class JogoCidade:
             "plano_governo": avaliar_plano_governo(self.cidade),
             "conselheiro": _conselheiro(self.cidade),
             "tutorial": TUTORIAL,
+            "timer": self.estado_timer(),
             "config_rodadas": CONFIG_RODADAS,
             "config_impostos": {
                 "minimo": CONFIG_IMPOSTOS["minimo"],
@@ -276,6 +333,11 @@ class JogoCidade:
                     self.cidade.dados["rodada"] = proxima
 
             if self.cidade.status == "jogando":
+                self._preparar_timer("transicao")
+            else:
+                self.cidade.timer.update({"restante_ms": 0, "fim_em_ms": None, "pausado": True, "motivo_pausa": "fim"})
+
+            if self.cidade.status == "jogando":
                 atualizar_pedido(self.cidade)
 
             evento = None
@@ -314,6 +376,7 @@ class JogoCidade:
         with self._bloqueio:
             prefeito = self.cidade.prefeito
             self.cidade = Cidade(prefeito)
+            self._preparar_timer("inicio")
             self.cidade.registrar_historico(
                 "inicio",
                 "Cidade reiniciada",

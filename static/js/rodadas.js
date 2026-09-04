@@ -28,18 +28,22 @@ export class ControladorRodadas {
         return faixa.tempo;
     }
 
-    iniciar(rodada, rodadaMaxima) {
+    iniciar(rodada, rodadaMaxima, { restanteMs = null, pausado = false } = {}) {
         this.pararIntervalo();
         this.rodadaAtual = rodada;
         this.rodadaMaxima = rodadaMaxima;
         this.tempoTotalRodada = this.obterDuracao(rodada);
-        this.tempoRestanteMs = this.tempoTotalRodada * 1000;
+        const totalMs = this.tempoTotalRodada * 1000;
+        this.tempoRestanteMs = restanteMs === null
+            ? totalMs
+            : Math.max(0, Math.min(totalMs, restanteMs));
         this.fimRodada = this.relogio() + this.tempoRestanteMs;
         this.rodadaAtiva = true;
         this.rodadaProcessando = false;
-        this.jogoPausado = false;
-        this.iniciarIntervalo();
+        this.jogoPausado = pausado;
+        if (!pausado) this.iniciarIntervalo();
         this.atualizarInterface();
+        if (!pausado && this.tempoRestanteMs === 0) this.encerrar("automatico");
     }
 
     iniciarIntervalo() {

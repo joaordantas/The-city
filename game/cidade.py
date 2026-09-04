@@ -50,6 +50,15 @@ class Cidade:
         self.pedidos_finalizados = set()
         self.projetos_em_andamento = {}
         self.projetos_concluidos = set()
+        # O cronometro faz parte do estado da partida. Assim ele sobrevive a
+        # recarregamentos da pagina e nao pode ser reiniciado pelo navegador.
+        self.timer = {
+            "rodada": self.dados["rodada"],
+            "restante_ms": 0,
+            "fim_em_ms": None,
+            "pausado": True,
+            "motivo_pausa": "inicio",
+        }
         self.simulacao = {}
         self.simulacao_suja = True
 
@@ -247,6 +256,42 @@ class Cidade:
         self.dados["populacao"] = max(0, min(nova_populacao, self.dados["capacidade_populacional"]))
         self.marcar_simulacao_suja()
         return self.dados["populacao"] - populacao_anterior
+
+    def exportar_persistencia(self):
+        """Retorna somente dados serializaveis e necessarios para retomar a partida."""
+        estado = deepcopy(self.__dict__)
+        for chave in (
+            "setores_desbloqueados",
+            "estradas",
+            "missoes_concluidas",
+            "pedidos_finalizados",
+            "projetos_concluidos",
+        ):
+            estado[chave] = sorted(estado[chave])
+        estado["obstaculos"] = {str(posicao): valor for posicao, valor in estado["obstaculos"].items()}
+        # A simulacao e derivada das demais informacoes e pode mudar entre versoes.
+        estado["simulacao"] = {}
+        estado["simulacao_suja"] = True
+        return estado
+
+    @classmethod
+    def restaurar_persistencia(cls, estado):
+        cidade = cls(estado.get("prefeito", "Prefeito"))
+        for chave, valor in estado.items():
+            if hasattr(cidade, chave):
+                setattr(cidade, chave, deepcopy(valor))
+        for chave in (
+            "setores_desbloqueados",
+            "estradas",
+            "missoes_concluidas",
+            "pedidos_finalizados",
+            "projetos_concluidos",
+        ):
+            setattr(cidade, chave, set(getattr(cidade, chave)))
+        cidade.obstaculos = {int(posicao): valor for posicao, valor in cidade.obstaculos.items()}
+        cidade.simulacao = {}
+        cidade.simulacao_suja = True
+        return cidade
 
     def to_dict(self):
         if self.simulacao_suja:

@@ -20,10 +20,10 @@ const controlador = new ControladorRodadas({
     config: {
         duracoes: [
             { inicio: 1, fim: 2, tempo: 60 },
-            { inicio: 3, fim: 5, tempo: 50 },
-            { inicio: 6, fim: 10, tempo: 45 },
-            { inicio: 11, fim: 15, tempo: 40 },
-            { inicio: 16, fim: 20, tempo: 35 },
+            { inicio: 3, fim: 5, tempo: 60 },
+            { inicio: 6, fim: 10, tempo: 55 },
+            { inicio: 11, fim: 15, tempo: 50 },
+            { inicio: 16, fim: 20, tempo: 45 },
         ],
     },
     relogio: () => agora,
@@ -33,7 +33,7 @@ const controlador = new ControladorRodadas({
 
 assert.deepEqual(
     [1, 3, 6, 11, 16].map((rodada) => controlador.obterDuracao(rodada)),
-    [60, 50, 45, 40, 35]
+    [60, 60, 55, 50, 45]
 );
 
 controlador.iniciar(1, 20);

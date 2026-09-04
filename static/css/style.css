@@ -11,6 +11,13 @@
     --claro: #fff7de;
     --branco: #ffffff;
     --sombra: rgba(5, 31, 62, 0.25);
+    /* Tokens dos componentes que terao uma revisao visual dedicada. */
+    --botao-raio: 8px;
+    --botao-raio-grande: 12px;
+    --rua-asfalto: #56636b;
+    --rua-borda: #27363d;
+    --rua-faixa: #f4d64f;
+    --rua-espessura: 18px;
 }
 
 * {
@@ -574,9 +581,9 @@ a {
 .lote.bloqueado { border-style: dashed; background: rgba(55, 74, 83, 0.68); color: white; filter: grayscale(0.7); }
 .lote.bloqueado .predio { opacity: 0.08; }
 .cadeado { position: absolute; z-index: 2; padding: 4px 6px; border-radius: 5px; background: #203744; color: white; font-size: 9px; text-transform: uppercase; }
-.lote.estrada { background: #56636b; }
+.lote.estrada { background: var(--rua-asfalto); }
 .lote.estrada .predio { display: none; }
-.icone-estrada { width: 100%; height: 18px; border-block: 3px solid #27363d; background: repeating-linear-gradient(90deg, transparent 0 12px, #f4d64f 12px 20px); }
+.icone-estrada { width: 100%; height: var(--rua-espessura); border-block: 3px solid var(--rua-borda); background: repeating-linear-gradient(90deg, transparent 0 12px, var(--rua-faixa) 12px 20px); }
 .lote.com-obstaculo .predio { display: none; }
 .icone-obstaculo { color: #315f27; font-size: 31px; text-shadow: 0 2px white; }
 .cidade-viva { position: absolute; z-index: 2; inset: 96px 12px 35px 242px; width: calc(100% - 254px); height: calc(100% - 131px); pointer-events: none; }
@@ -791,6 +798,12 @@ a {
 .passos-tutorial span.ativo { background: #1689cf; transform: scale(1.25); }
 .contagem-proxima { display: block; min-height: 30px; color: #075591; font-size: 24px; }
 .acoes-modal { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+
+/* Camada de componentes: permite redesenhar botoes e ruas sem tocar nas regras. */
+:where(button):not(.lote) { border-radius: var(--botao-raio); }
+:where(.botao-grande, .aba, .botao-primario, .botao-secundario, .botao-perigo) {
+    border-radius: var(--botao-raio-grande);
+}
 
 @media (max-width: 1100px) {
     .hud-principal { grid-template-columns: 90px minmax(0, 1fr) 170px; }

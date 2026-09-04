@@ -46,8 +46,8 @@ class FluxosCompletosTest(unittest.TestCase):
         primeira = cliente.post("/api/construir", json={"construcao_id": "casa", "posicao": 0}).get_json()
         segunda = cliente.post("/api/construir", json={"construcao_id": "casa", "posicao": 1}).get_json()
 
-        self.assertEqual(primeira["cidade"]["dados"]["dinheiro"], 9600)
-        self.assertEqual(segunda["cidade"]["dados"]["dinheiro"], 8700)
+        self.assertEqual(primeira["cidade"]["dados"]["dinheiro"], 14600)
+        self.assertEqual(segunda["cidade"]["dados"]["dinheiro"], 13700)
         self.assertEqual(segunda["cidade"]["dados"]["rodada"], 1)
         self.assertEqual(len(segunda["cidade"]["construcoes"]), 2)
         self.assertEqual({item["id"] for item in segunda["cidade"]["construcoes"]}, {"predio-1", "predio-2"})
@@ -144,8 +144,55 @@ class FluxosCompletosTest(unittest.TestCase):
         self.assertEqual(resposta["cidade"]["status"], "concluido")
         self.assertEqual(resposta["cidade"]["dados"]["rodada"], 20)
         self.assertEqual(len(resposta["cidade"]["historico_metricas"]), 20)
-        self.assertEqual(resposta["cidade"]["avaliacao_final"]["classificacao"], "Cidade equilibrada")
+        self.assertIn(
+            resposta["cidade"]["avaliacao_final"]["classificacao"],
+            {"Cidade equilibrada", "Gestao excelente", "Gestao excepcional"},
+        )
         self.assertGreaterEqual(resposta["cidade"]["avaliacao_final"]["total"], 4000)
+
+    def test_clientes_recebem_partidas_independentes_e_persistentes(self):
+        cliente_a = app.test_client()
+        cliente_b = app.test_client()
+        inicio_a = cliente_a.post("/api/novo-jogo", json={"prefeito": "Ana"}).get_json()
+        inicio_b = cliente_b.post("/api/novo-jogo", json={"prefeito": "Bia"}).get_json()
+        self.assertEqual(inicio_a["cidade"]["prefeito"], "Ana")
+        self.assertEqual(inicio_b["cidade"]["prefeito"], "Bia")
+
+        cliente_a.post("/api/timer/retomar", json={})
+        cliente_a.post("/api/construir", json={"construcao_id": "casa", "posicao": 0})
+        estado_a = cliente_a.get("/api/estado").get_json()
+        estado_b = cliente_b.get("/api/estado").get_json()
+        self.assertEqual(len(estado_a["cidade"]["construcoes"]), 1)
+        self.assertEqual(estado_b["cidade"]["construcoes"], [])
+
+    def test_api_bloqueia_todas_as_acoes_enquanto_o_jogo_esta_pausado(self):
+        cliente = app.test_client()
+        cliente.post("/api/novo-jogo", json={"prefeito": "Pausa"})
+        respostas = [
+            cliente.post("/api/construir", json={"construcao_id": "casa", "posicao": 0}),
+            cliente.post("/api/construir-estrada", json={"posicao": 0}),
+            cliente.post("/api/expandir", json={"setor_id": "norte"}),
+            cliente.post("/api/projetos/investir", json={"projeto_id": "parque_central"}),
+        ]
+        self.assertTrue(all(not resposta.get_json()["sucesso"] for resposta in respostas))
+        self.assertTrue(all("Retome" in resposta.get_json()["mensagem"] for resposta in respostas))
+
+    def test_timer_da_api_pausa_e_retorna_sem_reiniciar(self):
+        cliente = app.test_client()
+        inicio = cliente.post("/api/novo-jogo", json={"prefeito": "Tempo"}).get_json()
+        self.assertTrue(inicio["timer"]["pausado"])
+        rodando = cliente.post("/api/timer/retomar", json={}).get_json()
+        self.assertFalse(rodando["timer"]["pausado"])
+        pausado = cliente.post("/api/timer/pausar", json={}).get_json()
+        self.assertTrue(pausado["timer"]["pausado"])
+        self.assertLessEqual(pausado["timer"]["restante_ms"], 60_000)
+        recarregado = cliente.get("/api/estado").get_json()
+        self.assertEqual(recarregado["timer"]["restante_ms"], pausado["timer"]["restante_ms"])
+
+    def test_novo_jogo_rejeita_nome_que_nao_seja_texto(self):
+        resposta = app.test_client().post("/api/novo-jogo", json={"prefeito": 123})
+        self.assertEqual(resposta.status_code, 400)
+        self.assertFalse(resposta.get_json()["sucesso"])
 
     def test_reinicio_so_acontece_quando_solicitado(self):
         jogo = JogoCidade()
@@ -155,7 +202,7 @@ class FluxosCompletosTest(unittest.TestCase):
         self.assertEqual(len(segunda["cidade"]["construcoes"]), 2)
         reiniciado = jogo.reiniciar()
         self.assertEqual(reiniciado["cidade"]["construcoes"], [])
-        self.assertEqual(reiniciado["cidade"]["dados"]["dinheiro"], 10_000)
+        self.assertEqual(reiniciado["cidade"]["dados"]["dinheiro"], 15_000)
         self.assertEqual(reiniciado["missoes"]["concluidas"], [])
 
 

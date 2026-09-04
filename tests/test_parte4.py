@@ -27,7 +27,7 @@ class Parte4Test(unittest.TestCase):
         dinheiro = self.jogo.cidade.dados["dinheiro"]
         expansao = self.jogo.expandir("norte")
         self.assertTrue(expansao["sucesso"])
-        self.assertEqual(expansao["cidade"]["dados"]["dinheiro"], dinheiro - 3500)
+        self.assertEqual(expansao["cidade"]["dados"]["dinheiro"], dinheiro - 2800)
         self.assertFalse(self.jogo.expandir("norte")["sucesso"])
         self.assertTrue(self.jogo.construir("fazenda", 16)["sucesso"])
 
@@ -58,7 +58,7 @@ class Parte4Test(unittest.TestCase):
         self.jogo.cidade.marcar_simulacao_suja()
         resumo = processar_producao(self.jogo.cidade)
         self.assertEqual(resumo["produzido"]["materiais"], 16)
-        self.assertEqual(resumo["produzido"]["mercadorias"], 8)
+        self.assertEqual(resumo["produzido"]["mercadorias"], 18)
         self.assertEqual(self.jogo.cidade.estoque["materiais"], 16)
 
     def test_estoque_respeita_limite_e_armazem_aumenta_capacidade(self):

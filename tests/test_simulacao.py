@@ -13,9 +13,9 @@ class SimulacaoCidadeTest(unittest.TestCase):
     def test_estado_inicial_preserva_valores_e_detalha_economia(self):
         dados = self.estado["cidade"]["dados"]
         self.assertEqual((dados["energia"], dados["agua"], dados["qualidade_vida"]), (50, 75, 50))
-        self.assertEqual(self.estado["economia"]["receitas"], 660)
-        self.assertEqual(self.estado["economia"]["despesas"], 900)
-        self.assertEqual(self.estado["economia"]["previsao"], -240)
+        self.assertEqual(self.estado["economia"]["receitas"], 900)
+        self.assertEqual(self.estado["economia"]["despesas"], 600)
+        self.assertEqual(self.estado["economia"]["previsao"], 300)
         self.assertEqual(self.estado["economia"]["populacao_ativa"], 60)
         self.assertEqual(self.estado["economia"]["taxa_desemprego"], 50)
 
@@ -36,15 +36,15 @@ class SimulacaoCidadeTest(unittest.TestCase):
         self.jogo.cidade.dados["rodada"] = 6
         resposta = self.jogo.construir("hospital", 0)
         self.assertTrue(resposta["sucesso"])
-        self.assertEqual(resposta["cidade"]["dados"]["dinheiro"], 7200)
-        self.assertEqual(resposta["economia"]["manutencao"], 230)
-        self.assertEqual(resposta["economia"]["previsao"], -470)
+        self.assertEqual(resposta["cidade"]["dados"]["dinheiro"], 12200)
+        self.assertEqual(resposta["economia"]["manutencao"], 150)
+        self.assertEqual(resposta["economia"]["previsao"], 150)
         repetida = self.jogo.construir("hospital", 0)
         self.assertFalse(repetida["sucesso"])
-        self.assertEqual(repetida["cidade"]["dados"]["dinheiro"], 7200)
+        self.assertEqual(repetida["cidade"]["dados"]["dinheiro"], 12200)
         self.assertEqual(len(repetida["cidade"]["construcoes"]), 1)
         rodada = self.jogo.proxima_rodada(6)
-        self.assertEqual(rodada["resumo"]["dinheiro_final"], 7200 - 470)
+        self.assertEqual(rodada["resumo"]["dinheiro_final"], 12200 + 150)
 
     def test_falta_de_dinheiro_informa_valor(self):
         self.jogo.cidade.dados["rodada"] = 6
@@ -64,7 +64,7 @@ class SimulacaoCidadeTest(unittest.TestCase):
         self.assertEqual(resposta["cidade"]["dados"]["dinheiro"], dinheiro)
         self.assertEqual(resposta["cidade"]["mapa"][7], predio_id)
         self.assertIsNone(resposta["cidade"]["mapa"][0])
-        self.assertEqual(resposta["economia"]["manutencao"], 160)
+        self.assertEqual(resposta["economia"]["manutencao"], 110)
 
     def test_demolir_remove_todos_os_efeitos(self):
         self.jogo.cidade.dados["rodada"] = 6
@@ -84,7 +84,7 @@ class SimulacaoCidadeTest(unittest.TestCase):
         predio = resposta["cidade"]["construcoes"][0]
         self.assertEqual(predio["nivel"], 2)
         self.assertGreater(predio["capacidade_saude"], 10)
-        self.assertGreater(predio["manutencao"], 230)
+        self.assertGreater(predio["manutencao"], 150)
         self.assertGreater(predio["consumo_energia"], 6)
 
     def test_sobrecarga_reduz_eficiencia(self):

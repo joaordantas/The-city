@@ -507,6 +507,21 @@ function atualizarBloqueioAcoes() {
     });
     elementos.controlesImpostos.querySelectorAll("button").forEach((botao) => { botao.disabled = bloqueado; });
     document.querySelectorAll("[data-escolha-evento]").forEach((botao) => { botao.disabled = bloqueado; });
+    document.querySelectorAll("[data-entregar-pedido], [data-recusar-pedido]").forEach((botao) => {
+        botao.disabled = bloqueado;
+    });
+    document.querySelectorAll("[data-investir-projeto]").forEach((botao) => {
+        const projeto = estadoAtual.projetos.find((item) => item.id === botao.dataset.investirProjeto);
+        botao.disabled = bloqueado || !projeto?.disponivel || projeto?.concluido;
+    });
+    document.querySelectorAll("[data-expandir-setor]").forEach((botao) => {
+        const setor = estadoAtual.territorio.setores.find((item) => item.id === botao.dataset.expandirSetor);
+        botao.disabled = bloqueado || setor?.desbloqueado;
+    });
+    const botaoEstrada = document.querySelector("[data-modo-mapa]");
+    const botaoExpansao = document.querySelector("[data-abrir-expansao]");
+    if (botaoEstrada) botaoEstrada.disabled = bloqueado || !estadoAtual.progressao.sistemas.estradas.desbloqueado;
+    if (botaoExpansao) botaoExpansao.disabled = bloqueado || !estadoAtual.progressao.sistemas.expansao.desbloqueado;
     elementos.painelPredio.querySelectorAll("button:not(.fechar-detalhe)").forEach((botao) => {
         if (botao.matches("[data-melhorar-predio]")) {
             const predio = estadoAtual.cidade.construcoes.find((item) => item.id === predioSelecionado);
@@ -542,14 +557,31 @@ function definirModal(modal, aberto) {
     modal.setAttribute("aria-hidden", aberto ? "false" : "true");
 }
 
-function alternarPausa() {
+async function alternarPausa() {
     if (!controladorRodadas || controladorRodadas.rodadaProcessando) return;
     if (elementos.modalTutorial.getAttribute("aria-hidden") === "false") return;
-    if (controladorRodadas.jogoPausado) {
+    try {
+        if (controladorRodadas.jogoPausado) {
+            const resposta = await chamarApi("/api/timer/retomar", {});
+            definirModal(elementos.modalPausa, false);
+            controladorRodadas.iniciar(
+                resposta.cidade.dados.rodada,
+                resposta.cidade.dados.max_rodadas,
+                { restanteMs: resposta.timer.restante_ms, pausado: false },
+            );
+        } else if (controladorRodadas.pausar()) {
+            const resposta = await chamarApi("/api/timer/pausar", {});
+            controladorRodadas.iniciar(
+                resposta.cidade.dados.rodada,
+                resposta.cidade.dados.max_rodadas,
+                { restanteMs: resposta.timer.restante_ms, pausado: true },
+            );
+            definirModal(elementos.modalPausa, true);
+        }
+    } catch (erro) {
+        elementos.mensagem.textContent = erro.message;
+        if (controladorRodadas.jogoPausado) controladorRodadas.retomar();
         definirModal(elementos.modalPausa, false);
-        controladorRodadas.retomar();
-    } else if (controladorRodadas.pausar()) {
-        definirModal(elementos.modalPausa, true);
     }
     atualizarBloqueioAcoes();
 }
@@ -733,15 +765,27 @@ async function processarFimDaRodada({ rodada }) {
 
         if (resposta.rodada_ja_processada) {
             elementos.overlayTransicao.setAttribute("aria-hidden", "true");
-            controladorRodadas.iniciar(resposta.cidade.dados.rodada, resposta.cidade.dados.max_rodadas);
+            const sincronizada = resposta.timer.pausado
+                ? await chamarApi("/api/timer/retomar", {})
+                : resposta;
+            controladorRodadas.iniciar(
+                sincronizada.cidade.dados.rodada,
+                sincronizada.cidade.dados.max_rodadas,
+                { restanteMs: sincronizada.timer.restante_ms, pausado: false },
+            );
             atualizarBloqueioAcoes();
             return;
         }
 
         await mostrarResumo(resposta);
         if (resposta.cidade.status === "jogando") {
+            const retomada = await chamarApi("/api/timer/retomar", {});
             elementos.overlayTransicao.setAttribute("aria-hidden", "true");
-            controladorRodadas.iniciar(resposta.cidade.dados.rodada, resposta.cidade.dados.max_rodadas);
+            controladorRodadas.iniciar(
+                retomada.cidade.dados.rodada,
+                retomada.cidade.dados.max_rodadas,
+                { restanteMs: retomada.timer.restante_ms, pausado: false },
+            );
             atualizarBloqueioAcoes();
         } else {
             controladorRodadas.parar();
@@ -772,8 +816,25 @@ async function iniciarJogo() {
             aoEncerrar: processarFimDaRodada,
         });
         atualizarTela(estado, "Analise as prioridades e administre antes que o tempo termine.");
-        controladorRodadas.iniciar(estado.cidade.dados.rodada, estado.cidade.dados.max_rodadas);
-        if (estado.tutorial.obrigatorio && sessionStorage.getItem(CHAVE_TUTORIAL_CONCLUIDO) !== prefeito) iniciarTutorial();
+        controladorRodadas.iniciar(
+            estado.cidade.dados.rodada,
+            estado.cidade.dados.max_rodadas,
+            { restanteMs: estado.timer.restante_ms, pausado: estado.timer.pausado },
+        );
+        const tutorialPendente = estado.tutorial.obrigatorio
+            && sessionStorage.getItem(CHAVE_TUTORIAL_CONCLUIDO) !== prefeito;
+        if (tutorialPendente) {
+            iniciarTutorial();
+        } else if (estado.timer.pausado && estado.timer.motivo_pausa === "usuario") {
+            definirModal(elementos.modalPausa, true);
+        } else if (estado.timer.pausado) {
+            const retomada = await chamarApi("/api/timer/retomar", {});
+            controladorRodadas.iniciar(
+                retomada.cidade.dados.rodada,
+                retomada.cidade.dados.max_rodadas,
+                { restanteMs: retomada.timer.restante_ms, pausado: false },
+            );
+        }
     } catch (erro) {
         elementos.mensagem.textContent = erro.message;
     }
@@ -842,8 +903,8 @@ elementos.confirmarDemolicao.addEventListener("click", async () => {
     definirModal(elementos.modalDemolicao, false);
     if (resposta.sucesso) fecharDetalhesPredio();
 });
-elementos.botaoPausa.addEventListener("click", alternarPausa);
-elementos.botaoRetomar.addEventListener("click", alternarPausa);
+elementos.botaoPausa.addEventListener("click", () => alternarPausa());
+elementos.botaoRetomar.addEventListener("click", () => alternarPausa());
 elementos.botaoReiniciar.addEventListener("click", () => definirModal(elementos.modalReinicio, true));
 elementos.cancelarReinicio.addEventListener("click", () => definirModal(elementos.modalReinicio, false));
 elementos.confirmarReinicio.addEventListener("click", async () => {
@@ -852,7 +913,7 @@ elementos.confirmarReinicio.addEventListener("click", async () => {
     definirModal(elementos.modalReinicio, false);
     definirModal(elementos.modalPausa, false);
     atualizarTela(resposta, resposta.mensagem);
-    controladorRodadas.iniciar(1, resposta.cidade.dados.max_rodadas);
+    controladorRodadas.iniciar(1, resposta.cidade.dados.max_rodadas, { restanteMs: resposta.timer.restante_ms, pausado: true });
     sessionStorage.removeItem(CHAVE_TUTORIAL_CONCLUIDO);
     iniciarTutorial();
 });
@@ -873,7 +934,7 @@ elementos.conselheiro.addEventListener("click", (evento) => {
         elementos.conselheiro.hidden = true;
     }
 });
-elementos.avancarTutorial.addEventListener("click", () => {
+elementos.avancarTutorial.addEventListener("click", async () => {
     if (etapaTutorial < estadoAtual.tutorial.etapas.length - 1) {
         etapaTutorial += 1;
         mostrarEtapaTutorial();
@@ -881,7 +942,16 @@ elementos.avancarTutorial.addEventListener("click", () => {
     }
     definirModal(elementos.modalTutorial, false);
     sessionStorage.setItem(CHAVE_TUTORIAL_CONCLUIDO, estadoAtual.cidade.prefeito);
-    controladorRodadas.retomar();
+    try {
+        const resposta = await chamarApi("/api/timer/retomar", {});
+        controladorRodadas.iniciar(
+            resposta.cidade.dados.rodada,
+            resposta.cidade.dados.max_rodadas,
+            { restanteMs: resposta.timer.restante_ms, pausado: false },
+        );
+    } catch (erro) {
+        elementos.mensagem.textContent = erro.message;
+    }
     atualizarBloqueioAcoes();
 });
 

@@ -21,7 +21,7 @@ class Parte3Test(unittest.TestCase):
 
     def test_missao_paga_recompensa_uma_unica_vez(self):
         primeira = self.jogo.construir("casa", 0)
-        self.assertEqual(primeira["cidade"]["dados"]["dinheiro"], 10000 - 900 + 500)
+        self.assertEqual(primeira["cidade"]["dados"]["dinheiro"], 15000 - 900 + 500)
         self.assertIn("primeira_moradia", primeira["missoes"]["concluidas"])
 
         dinheiro = primeira["cidade"]["dados"]["dinheiro"]

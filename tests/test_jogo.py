@@ -11,7 +11,7 @@ class JogoCidadeTest(unittest.TestCase):
 
     def test_configuracao_progressiva_das_rodadas(self):
         faixas = self.jogo.estado()["config_rodadas"]["duracoes"]
-        self.assertEqual([faixa["tempo"] for faixa in faixas], [60, 50, 45, 40, 35])
+        self.assertEqual([faixa["tempo"] for faixa in faixas], [60, 60, 55, 50, 45])
 
     def test_mesma_rodada_nao_e_processada_duas_vezes(self):
         primeira = self.jogo.proxima_rodada(rodada_esperada=1)

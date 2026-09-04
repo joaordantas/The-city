@@ -1,6 +1,7 @@
 # Cidade em Equilibrio
 
-MVP de um jogo escolar de administracao de cidade.
+Jogo escolar completo de administracao de cidade, com partidas persistentes,
+progressao por fases e sistemas urbanos interligados.
 
 O jogador e o prefeito e precisa equilibrar dinheiro, populacao, empregos,
 educacao, saude, energia, agua, poluicao e qualidade de vida.
@@ -32,6 +33,14 @@ python -m unittest discover -s tests -p "test_*.py"
 node tests/test_rodadas.mjs
 ```
 
+No Windows com Microsoft Edge, o fluxo em navegador real tambem pode ser
+validado com:
+
+```powershell
+$env:THE_CITY_BROWSER_TESTS="1"
+python -m unittest tests.test_navegador
+```
+
 ## Estrutura principal
 
 ```text
@@ -49,6 +58,7 @@ game/territorio.py      Setores, obstaculos, estradas e transito simples
 game/producao.py        Producao automatica, consumo e limites de estoque
 game/logistica.py       Pedidos opcionais e entregas atomicas
 game/projetos.py        Grandes projetos por etapas e beneficios finais
+game/persistencia.py    Partidas independentes e persistencia SQLite
 game/jogo.py            Coordena os sistemas do jogo
 templates/index.html    Menu inicial
 templates/jogo.html     Interface da partida
@@ -66,6 +76,16 @@ static/js/menu.js                Configuracoes e creditos do menu
 O projeto possui uma unica versao ativa: o Flask serve as paginas de
 `templates/`, os arquivos visuais ficam em `static/` e as regras do jogo ficam
 isoladas no pacote `game/`.
+
+Cada navegador recebe uma partida independente identificada por um cookie
+seguro. O estado e o prazo do cronometro ficam em SQLite, em
+`instance/partidas.sqlite3`, e sobrevivem a recarregamentos e reinicios quando
+o diretorio da aplicacao e persistente. O caminho pode ser alterado com a
+variavel de ambiente `THE_CITY_DB`.
+
+O visual de botoes e ruas usa tokens no inicio de `static/css/style.css`. A
+marcacao das ruas tambem esta isolada em `.lote.estrada` e `.icone-estrada`,
+permitindo uma revisao visual futura sem alterar simulacao, API ou salvamento.
 
 ## Simulacao
 
@@ -100,3 +120,14 @@ cada rodada. Armazens ampliam o limite, comercios consomem mercadorias e a
 disponibilidade de alimentos influencia crescimento e qualidade de vida.
 Pedidos logisticos sao opcionais e grandes projetos ativam seus beneficios
 somente depois da ultima etapa.
+
+## Balanceamento
+
+A economia inicial oferece margem para planejamento, enquanto servicos,
+expansao e eventos ainda exigem escolhas. Comercio e industria sustentam a
+arrecadacao; producao abastece os pedidos; e as recompensas logisticas tornam
+possivel concluir ao menos um grande projeto sem dinheiro artificial.
+
+A suite inclui partidas completas com varias sementes de eventos aleatorios.
+Ela verifica chegada a rodada 20, caixa positivo e pontuacao minima de Cidade
+equilibrada para uma estrategia de referencia.
